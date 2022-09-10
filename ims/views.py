@@ -222,10 +222,15 @@ def sale_complete(request):
     staff = request.user.staff
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     sale.transaction_id = transaction_id
-    total = data['payment']['total_cart']
+    total = float(data['payment']['total_cart'])
+    sale.final_total_price = sale.get_cart_total
+    # sale.save()
+    # print(total)
     # quantity = data['payment']['total_quantity']
+    print(sale.get_cart_total)
 
     if total == sale.get_cart_total:
+        print(sale.get_cart_total)
         sale.completed = True
     sale.save()
 

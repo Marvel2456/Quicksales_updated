@@ -58,10 +58,10 @@ function updateQuantity(e){
 
     .then((data) =>{
         console.log('Success:', data);
-        document.getElementById('sub_total').innerHTML = `${data.sub_total.toFixed(1)}`
+        document.getElementsByClassName('Qty').innerHTML = `${data.sub_total.toFixed(1)}`
         document.getElementById('final_total').innerHTML = `<b>Total:</b><div><i class="fa-solid fa-naira-sign"></i>${data.final_total.toFixed(1)}</div>`
         document.getElementById('sum_quantity').innerHTML = `<b>Item:</b><div>${data.total_quantity}</div>`
         document.getElementById('addCart').innerHTML = `${data.total_quantity}`
-
+        location.reload()
     })
 }

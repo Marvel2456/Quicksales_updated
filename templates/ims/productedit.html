@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block title %} Edit Product {% endblock title %}
+{% block content %}
+
+<div class="col-12">
+    <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
+        <div class="app-card-header p-3 border-bottom-0">
+            <!-- row begins -->
+            <div class="row align-items-center gx-3">
+                <div class="col-auto">
+                    <div class="app-icon-holder">
+                        <a href="{% url 'inventory' %}"> 
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-backspace-fill" viewBox="0 0 16 16">
+                                <path d="M15.683 3a2 2 0 0 0-2-2h-7.08a2 2 0 0 0-1.519.698L.241 7.35a1 1 0 0 0 0 1.302l4.843 5.65A2 2 0 0 0 6.603 15h7.08a2 2 0 0 0 2-2V3zM5.829 5.854a.5.5 0 1 1 .707-.708l2.147 2.147 2.146-2.147a.5.5 0 1 1 .707.708L9.39 8l2.146 2.146a.5.5 0 0 1-.707.708L8.683 8.707l-2.147 2.147a.5.5 0 0 1-.707-.708L7.976 8 5.829 5.854z"/>
+                            </svg>
+                        </a>
+                    </div>
+                     
+                </div>
+                <div class="col-auto">
+                    <h4 class="app-card-title">Edit [ {{product.product_name}} ]</h4>
+                </div>
+            </div>
+            <!-- row ends -->
+        </div>
+        <!--//app-card-header-->
+        <div class="app-card-body px-4 w-100">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="item border-bottom py-3">
+                    <!-- row begins -->
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Product name</label>
+                            <input type="text" class="form-control" name="product_name"  value="{{product.product_name}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row ends-->
+                </div>
+                <!--//item begins-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Brand</label>
+                            <input type="text" class="form-control" name="brand"  value="{{product.brand}}">
+                        </div><!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div><!--//col-->
+                    </div><!--//row-->
+                </div>
+                <!--//item ends-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Quantity</label>
+                            <input type="text" class="form-control" name="quantity"  value="{{product.quantity}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <!--//item-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Cost Price</label>
+                            <input type="text" class="form-control" name="cost_price"  value="{{product.cost_price}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Sale Price</label>
+                            <input type="text" class="form-control" name="sale_price"  value="{{product.sale_price}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <!--//item-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Unit</label>
+                            <input type="text" class="form-control" name="unit"  value="{{product.unit}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <!--//item-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="batch_no" class="py-2">Batch No</label>
+                            <input type="text" class="form-control" name="batch_no"  value="{{product.batch_no}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <!--//item-->
+                <div class="item border-bottom py-3">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="product_name" class="py-2">Reorder Level</label>
+                            <input type="text" class="form-control" name="reorder_level"  value="{{product.reorder_level}}">
+                        </div>
+                        <!--//col-->
+                        <div class="col text-end">
+                            <button type="submit" class="btn-sm app-btn-secondary">Edit</button>
+                        </div>
+                        <!--//col-->
+                    </div>
+                    <!--//row-->
+                </div>
+                <!--//item-->
+
+        </div>
+        <!--//app-card-body-->
+        <div class="app-card-footer p-4 mt-auto">
+            <button type="submit" class="btn app-btn-secondary">Save</button>
+            <a href="{% url 'inventory' %}">
+            <button type="button" class="btn app-btn-secondary">Back</button>
+            </a>
+        </div>
+        </form>
+        <!--//app-card-footer-->
+       
+    </div><!--//app-card-->
+</div><!--//col-->
+
+{% endblock content %}

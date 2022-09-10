@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>CLT |{% block title %} {% endblock %}</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="">
+    <meta name="author" content="">    
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}"> 
+    
+    <!-- FontAwesome JS-->
+    <script defer src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
+    
+    <!-- App CSS -->  
+    <link id="theme-style" rel="stylesheet" href="{% static 'assets/css/portal.css' %}">
+
+</head> 
+
+<body class="app">
+    <header class="app-header fixed-top">
+        {% include 'partials/_navbar.html' %}
+        {% include 'partials/_sidebar.html' %}
+        
+    </header>
+    <div class="app-wrapper">
+        {% block content %}
+    
+
+        {% endblock content %}
+        {% include 'ims/add_product.html' %}
+        {% include 'ims/add_category.html' %}
+        {% include 'ims/sale_price.html' %}
+        {% include 'ims/cost_price.html' %}
+        {% include 'ims/restock.html' %}
+        {% include 'ims/reorder_level.html' %}
+        
+        {% include 'partials/_footer.html' %}
+    </div>
+    
+    
+    <!-- Javascript -->          
+    <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>  
+
+    <!-- Charts JS -->
+    <script src="{% static 'assets/plugins/chart.js/chart.min.js' %}"></script> 
+    <script src="{% static 'assets/js/index-charts.js' %}"></script> 
+    
+    <!-- Page Specific JS -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+    <script src="{% static 'assets/js/cart.js' %}"></script>
+    <script>
+        let user = '{{request.user}}'
+    </script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+    </script>
+
+</body>
+</html>

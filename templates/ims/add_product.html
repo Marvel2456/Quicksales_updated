@@ -1,0 +1,82 @@
+{% block content %}
+<!-- Modal -->
+<div class="modal fade" {% block modal-id %} id="addProductModal" {% endblock modal-id %} tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="addProductModalLabel">{% block modal-title %}<i class="fas fa-plus"></i>&nbsp;&nbsp; Add Product{% endblock modal-title %}</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!--Forms begins-->
+      <form {% block Action %} action="{% url 'inventory' %}" {% endblock Action %} method="POST" class="card p-3 border-dark mt-3" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="modal-body">
+
+        <!--==Block Id==-->
+        {% block Value-id %}  {% endblock Value-id %}
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            <input name="product_name" type="text" class="form-control" placeholder="Product Name" required {% block Value-product_name %} {% endblock Value-product_name %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            {{form.category}}
+            {% comment %} <select class="form-select" name="category" required {% block Value-category %} {% endblock Value-category %}>
+              {% for category in categories %}
+                {% if products.category == category.id %}
+                <option value="{{category.id}}" selected>{{category.category_name}}</option>
+                {% else %}
+                <option value="{{ category.id }}">{{category.category_name}}</option>
+                {% endif %}
+              {% endfor %}
+            </select> {% endcomment %}
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            <input name="brand" type="text" class="form-control" placeholder="Brand" required {% block Value-brand %} {% endblock Value-brand %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            <input name="quantity" type="text" class="form-control" placeholder="Quantity" required {% block Value-quantity %} {% endblock Value-quantity %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i class="fas fa-dollar-sign"></i></span>
+            <input name="cost_price" type="text" class="form-control" placeholder="Cost Price" required {% block Value-cost_price %} {% endblock Value-cost_price %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i class="fas fa-dollar-sign"></i></span>
+            <input name="sale_price" type="text" class="form-control" placeholder="Sale Price" required {% block Value-sale_price %} {% endblock Value-sale_price %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            <input name="unit" type="text" class="form-control" placeholder="Unit" {% block Value-unit %} {% endblock Value-unit %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            <input name="batch_no" type="text" class="form-control" placeholder="Batch No" {% block Value-batch_no %} {% endblock Value-batch_no %}>
+          </div>
+          <div class="mt-4 text-center" style="width:100%;">
+            <button type="submit" class="btn btn-secondary">
+              {% block Btn-action %}<i class="fas fa-plus"></i>&nbsp;&nbsp; Add Product{% endblock Btn-action %}
+            </button>
+            
+            <button type="reset" class="btn btn-secondary" title="Reset">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <!--Form ends-->
+    </div>
+  </div>
+</div>
+{% endblock content %}

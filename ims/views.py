@@ -224,26 +224,30 @@ def sale_complete(request):
     sale.transaction_id = transaction_id
     total = float(data['payment']['total_cart'])
     sale.final_total_price = sale.get_cart_total
-    # sale.save()
-    # print(total)
-    # quantity = data['payment']['total_quantity']
-    print(sale.get_cart_total)
 
     if total == sale.get_cart_total:
-        print(sale.get_cart_total)
         sale.completed = True
     sale.save()
-
-    # if quantity == sale.get_cart_items:
-    #     sale.completed = True
-    #     print('Done')
-    # sale.save()
-
 
     return JsonResponse('Payment completed', safe=False)
 
 def sales(request):
-    return render(request, 'ims/sales.html')
+    sale = Sale.objects.all()
+
+    context = {
+        'sale':sale,
+    }
+    return render(request, 'ims/sales.html', context)
+def sale_delete(request, pk):
+    sale = Sale.objects.get(id=pk)
+    if request.method == "POST":
+        sale.delete()
+        messages.success(request, "Succesfully deleted")
+        return redirect('sales')
+    context = {
+        'sale':sale
+    }
+    return render(request, 'ims/sales_delete.html', context)
 
 def report(request):
     return render(request, 'ims/records.html')

@@ -252,6 +252,11 @@ def sale_delete(request, pk):
 def report(request):
     return render(request, 'ims/records.html')
 
+def reciept(request, pk):
+    sale = Sale.objects.get(id=pk)
+    return render(request, 'ims/reciept.html')
+
+
 def inventory(request):
     products = Product.objects.all().order_by('-date_created')
     category = Category.objects.all()

@@ -24,8 +24,8 @@ var lineChartConfig = {
 		datasets: [{
 			label: 'Current week',
 			fill: false,
-			backgroundColor: window.chartColors.green,
-			borderColor: window.chartColors.green,
+			backgroundColor: window.chartColors.blue,
+			borderColor: window.chartColors.blue,
 			data: [
 				randomDataPoint(),
 				randomDataPoint(),
@@ -140,8 +140,8 @@ var barChartConfig = {
 		labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 		datasets: [{
 			label: 'Orders',
-			backgroundColor: window.chartColors.green,
-			borderColor: window.chartColors.green,
+			backgroundColor: window.chartColors.blue,
+			borderColor: window.chartColors.blue,
 			borderWidth: 1,
 			maxBarThickness: 16,
 			

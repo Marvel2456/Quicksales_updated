@@ -12,7 +12,7 @@
     --bs-red: #dc3545;
     --bs-orange: #fd7e14;
     --bs-yellow: #ffc107;
-    --bs-green: #032a47;
+    --bs-green: #5cb377;
     --bs-teal: #032a47;
     --bs-cyan: #0dcaf0;
     --bs-black: #000;
@@ -36,7 +36,7 @@
     --bs-info: #5b99ea;
     --bs-primary-rgb: 3, 42, 71;
     --bs-secondary-rgb: 93, 103, 120;
-    --bs-success-rgb: 92, 179, 119;
+    --bs-success-rgb:92, 95, 179;
     --bs-danger-rgb: 210, 109, 105;
     --bs-warning-rgb: 238, 191, 65;
     --bs-info-rgb: 91, 153, 234;
@@ -3343,19 +3343,19 @@ fieldset:disabled .btn {
 
 .btn-primary {
     --bs-btn-color: #000;
-    --bs-btn-bg: #15a362;
-    --bs-btn-border-color: #15a362;
+    --bs-btn-bg: #02296e;
+    --bs-btn-border-color: #02296e;
     --bs-btn-hover-color: #000;
-    --bs-btn-hover-bg: #38b17a;
-    --bs-btn-hover-border-color: #2cac72;
+    --bs-btn-hover-bg: #0a5085;
+    --bs-btn-hover-border-color: #03;
     --bs-btn-focus-shadow-rgb: 18, 139, 83;
     --bs-btn-active-color: #000;
-    --bs-btn-active-bg: #44b581;
-    --bs-btn-active-border-color: #2cac72;
+    --bs-btn-active-bg: #0a5085;
+    --bs-btn-active-border-color: #0a5085;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --bs-btn-disabled-color: #000;
-    --bs-btn-disabled-bg: #15a362;
-    --bs-btn-disabled-border-color: #15a362
+    --bs-btn-disabled-bg: #02296e;
+    --bs-btn-disabled-border-color: #02296e
 }
 
 .btn-secondary {
@@ -3444,17 +3444,17 @@ fieldset:disabled .btn {
 }
 
 .btn-outline-primary {
-    --bs-btn-color: #15a362;
-    --bs-btn-border-color: #15a362;
+    --bs-btn-color: #02296e;
+    --bs-btn-border-color: #02296e;
     --bs-btn-hover-color: #000;
-    --bs-btn-hover-bg: #15a362;
-    --bs-btn-hover-border-color: #15a362;
-    --bs-btn-focus-shadow-rgb: 21, 163, 98;
+    --bs-btn-hover-bg: #02296e;
+    --bs-btn-hover-border-color: #02296e;
+    --bs-btn-focus-shadow-rgb: 2, 41, 110;
     --bs-btn-active-color: #000;
-    --bs-btn-active-bg: #15a362;
-    --bs-btn-active-border-color: #15a362;
+    --bs-btn-active-bg: #02296e;
+    --bs-btn-active-border-color: #02296e;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #15a362;
+    --bs-btn-disabled-color: #02296e;
     --bs-btn-disabled-bg: transparent;
     --bs-gradient: none
 }
@@ -7637,12 +7637,12 @@ fieldset:disabled .btn {
 }
 
 .link-primary {
-    color: #15a362 !important
+    color: #02296e !important
 }
 
 .link-primary:hover,
 .link-primary:focus {
-    color: #44b581 !important
+    color: #4448b5 !important
 }
 
 .link-secondary {
@@ -7655,12 +7655,12 @@ fieldset:disabled .btn {
 }
 
 .link-success {
-    color: #5cb377 !important
+    color: #605cb3 !important
 }
 
 .link-success:hover,
 .link-success:focus {
-    color: #7dc292 !important
+    color: #827dc2 !important
 }
 
 .link-danger {
@@ -9001,7 +9001,7 @@ fieldset:disabled .btn {
 
 .text-success {
     --bs-text-opacity: 1;
-    color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important
+    color: rgba(var(--bs-blue), var(--bs-text-opacity)) !important
 }
 
 .text-danger {
@@ -12587,12 +12587,12 @@ h6,
 }
 
 a {
-    color: #15a362;
+    color: #02296e;
     text-decoration: none
 }
 
 a:hover {
-    color: #128c54
+    color: #26128c
 }
 
 hr {
@@ -12663,14 +12663,14 @@ hr {
 }
 
 a.app-link {
-    color: #252930;
+    color: #032a47;
     text-decoration: underline;
     -webkit-text-decoration-color: rgba(37, 41, 48, .3);
     text-decoration-color: rgba(37, 41, 48, .3)
 }
 
 a.app-link:hover {
-    color: #15a362;
+    color: #a0d0e8;
     -webkit-text-decoration-color: rgba(21, 163, 98, .8);
     text-decoration-color: rgba(21, 163, 98, .8)
 }
@@ -12704,16 +12704,16 @@ button.close:focus {
 }
 
 .app-btn-primary {
-    background: #15a362;
+    background: #02296e;
     color: #fff;
-    border-color: #15a362
+    border-color: #02296e
 }
 
 .app-btn-primary:hover,
 .app-btn-primary:active {
     color: #fff;
-    background: #18ba70;
-    border-color: #18ba70
+    background: #1838ba;
+    border-color: #1838ba
 }
 
 .app-btn-secondary {
@@ -12723,19 +12723,19 @@ button.close:focus {
 }
 
 .app-btn-secondary:hover {
-    color: #15a362;
-    border: 1px solid #15a362;
+    color: #02296e;
+    border: 1px solid #02296e;
     background: #fff
 }
 
 .btn-light {
     background: #f5f6fe;
-    color: #15a362
+    color: #02296e
 }
 
 .btn-light:hover {
     background: #f5f6fe;
-    color: #15a362
+    color: #02296e
 }
 
 .form-control {
@@ -12753,8 +12753,8 @@ button.close:focus {
 }
 
 .form-check-input:checked {
-    background-color: #15a362;
-    border-color: #15a362
+    background-color: #02296e;
+    border-color: #02296e
 }
 
 .dropdown-menu {
@@ -12832,7 +12832,7 @@ button.close:focus {
 .app-search-form .search-btn:focus,
 .app-search-form .search-btn:hover {
     outline: none !important;
-    color: #15a362;
+    color: #02296e;
     box-shadow: none
 }
 
@@ -12951,8 +12951,8 @@ button.close:focus {
 
 .app-notifications-dropdown .app-icon-holder {
     display: inline-block;
-    background: #edfdf6;
-    color: #15a362;
+    background: #ededfd;
+    color: #1544a3;
     width: 36px;
     height: 36px;
     padding-top: 4px;
@@ -13001,7 +13001,7 @@ button.close:focus {
     }
 
     .search-mobile-trigger:hover {
-        color: #15a362;
+        color: #02296e;
         -webkit-opacity: 1;
         -moz-opacity: 1;
         opacity: 1
@@ -13113,14 +13113,14 @@ button.close:focus {
 }
 
 .app-branding .logo-text {
-    color: #252930;
+    color: #032a47;
     font-size: 1.25rem;
     font-weight: 600;
     vertical-align: middle
 }
 
 .app-nav {
-    color: #5d6778;
+    color: #032a47;
     display: block;
     padding: 0;
     width: 100%
@@ -13132,14 +13132,14 @@ button.close:focus {
 
 .app-nav .nav-item {
     display: block;
-    color: #5d6778;
+    color: #02296e;
     background: #fff
 }
 
 .app-nav .nav-link {
     display: block;
     padding: .875rem 1rem;
-    color: #252930;
+    color: #02296e;
     position: relative;
     display: block;
     padding-left: 3rem;
@@ -13147,9 +13147,9 @@ button.close:focus {
 }
 
 .app-nav .nav-link.active {
-    color: #15a362;
-    background: #edfdf6;
-    border-left: 3px solid #15a362;
+    color: #02296e;
+    background: #ededfd;
+    border-left: 3px solid #032a47;
     font-weight: 500
 }
 
@@ -13159,7 +13159,7 @@ button.close:focus {
 }
 
 .app-nav .nav-link:hover {
-    color: #15a362
+    color: #032a47
 }
 
 .app-nav .nav-icon {
@@ -13210,7 +13210,7 @@ button.close:focus {
 }
 
 .app-nav .submenu-link {
-    color: #5d6778;
+    color: #032a47;
     font-size: .875rem;
     margin-left: 2rem;
     padding: .5rem 1rem;
@@ -13233,15 +13233,15 @@ button.close:focus {
 }
 
 .app-nav .submenu-link:hover {
-    color: #252930
+    color: #073585;
 }
 
 .app-nav .submenu-link.active {
-    color: #15a362
+    color: #073585
 }
 
 .app-nav .submenu-link.active:before {
-    background-color: #15a362
+    background-color: #02296e
 }
 
 .app-sidepanel-footer {
@@ -13337,7 +13337,7 @@ button.close:focus {
 }
 
 .app-card.border-left-decoration {
-    border-left: 3px solid #15a362
+    border-left: 3px solid #a0d0e8
 }
 
 .app-card .app-card-link-mask {
@@ -13352,6 +13352,7 @@ button.close:focus {
 .app-card .app-card-header {
     border-bottom: 1px solid #e7e9ed
 }
+/* #a0d0e8 */
 
 .app-card .app-card-title {
     font-size: 1.125rem;
@@ -13458,8 +13459,8 @@ button.close:focus {
 
 .app-card .app-icon-holder {
     display: inline-block;
-    background: #edfdf6;
-    color: #15a362;
+    background: #edeefd;
+    color: #02296e;
     width: 50px;
     height: 50px;
     padding-top: 10px;
@@ -13568,19 +13569,19 @@ button.close:focus {
 }
 
 .app-card-doc .app-card-thumb-holder .icon-holder .excel-file {
-    color: #0da95f
+    color: #02296e
 }
 
 .app-card-doc .app-card-thumb-holder .icon-holder .ppt-file {
-    color: #f4b400
+    color: #02296e
 }
 
 .app-card-doc .app-card-thumb-holder .icon-holder .video-file {
-    color: #935dc1
+    color: #02296e
 }
 
 .app-card-doc .app-card-thumb-holder .icon-holder .zip-file {
-    color: #252930
+    color: #02296e
 }
 
 .app-card-doc .app-doc-title {
@@ -13652,14 +13653,14 @@ button.close:focus {
 }
 
 .app-nav-tabs .nav-link {
-    color: #5d6778;
+    color: #032a47;
     font-size: .875rem;
     font-weight: bold
 }
 
 .app-nav-tabs .nav-link.active {
-    color: #15a362;
-    border-bottom: 2px solid #15a362
+    color: #032a47;
+    border-bottom: 2px solid #032a47
 }
 
 .app-nav-tabs .nav-link.active:hover {
@@ -13668,7 +13669,7 @@ button.close:focus {
 
 .app-nav-tabs .nav-link:hover {
     background: #edfdf6;
-    color: #15a362
+    color: #032a47
 }
 
 .app-pagination .pagination {
@@ -13717,7 +13718,7 @@ button.close:focus {
     padding-left: 0;
     font-size: 1rem;
     text-decoration: none;
-    color: #15a362
+    color: #02296e
 }
 
 .app-card-accordion .faq-accordion .accordion-button:after {

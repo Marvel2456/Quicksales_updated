@@ -13841,7 +13841,9 @@ button.close:focus {
 }
 
 .app-login .auth-background-holder {
-    background: url("../images/background/background-1.jpg") no-repeat center center;
+    background: url("../images/background/inven3.jpg") no-repeat center center;
+    /* filter: blur(8px); */
+    /* -webkit-filter: blur(8px); */
     background-size: cover;
     height: 100vh;
     min-height: 100%

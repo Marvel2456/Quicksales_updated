@@ -45,7 +45,7 @@
                                
                             </div><hr>
 
-                            {% for item in items %}
+                            {% comment %} {% for item in items %}
                                 <div class="row">
                                     
                                         <div style="flex: 2;"><h6>{{item.product.product_name}}</h6></div>
@@ -58,7 +58,7 @@
                                         <div style="flex: 1;"><h6 id="sub_total">{{item.get_total}}</h6></div>
                                     
                                 </div><hr>
-                            {% endfor %}
+                            {% endfor %} {% endcomment %}
                         </div>
 
                     </div>

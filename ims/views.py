@@ -6,7 +6,7 @@ from datetime import datetime
 from .models import Category, Product, Sale, SalesItem
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, admin_only
-from . forms import ProductForm, EditProductForm, CategoryForm, EditCategoryForm, RestockForm
+from . forms import ProductForm, EditProductForm, CategoryForm, EditCategoryForm
 from django.http import JsonResponse
 import json
 # import datetime
@@ -111,17 +111,17 @@ def product(request):
 
 def product_detail(request, pk):
     product = Product.objects.get( id=pk )
-    form = RestockForm()
-    if request.method == "POST":
-        form = RestockForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Successfully updated")
-            return redirect('product_details', pk=product.id)
+    # form = RestockForm()
+    # if request.method == "POST":
+    #     form = RestockForm(request.POST, instance=product)
+    #     if form.is_valid():
+    #         form.save()
+    #         messages.success(request, "Successfully updated")
+    #         return redirect('product_details', pk=product.id)
     
     
     context = {
-        'form':form,
+        # 'form':form,
         'product':product,
     }
 
@@ -253,8 +253,15 @@ def report(request):
     return render(request, 'ims/records.html')
 
 def reciept(request, pk):
-    sale = Sale.objects.get(id=pk)
-    return render(request, 'ims/reciept.html')
+    
+    product = Product.objects.all()
+    sale, created = Sale.objects.get(id=pk, completed=True)
+    saleItem, created = SalesItem.objects.get(sale=sale, product=product)
+
+    context = {
+        'saleItem':saleItem
+    }
+    return render(request, 'ims/reciept.html', context)
 
 
 def inventory(request):

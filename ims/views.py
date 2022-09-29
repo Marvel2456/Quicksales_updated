@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime
-from .models import Category, Product, Sale, SalesItem
+from .models import Category, Product, Sale, SalesItem, Inventory
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from . forms import ProductForm, EditProductForm, CategoryForm, EditCategoryForm
@@ -99,14 +99,14 @@ def update_category(request, pk):
     }
     return render(request, 'ims/category_edit.html', context)
 
-def product(request):
+def store(request):
     product = Product.objects.all()
 
     context = {
         
         'product':product,
     }
-    return render(request, 'ims/product.html', context)
+    return render(request, 'ims/store.html', context)
 
 
 def product_detail(request, pk):
@@ -264,7 +264,7 @@ def reciept(request, pk):
     return render(request, 'ims/reciept.html', context)
 
 
-def inventory(request):
+def product(request):
     products = Product.objects.all().order_by('-date_created')
     category = Category.objects.all()
     form = ProductForm()
@@ -274,13 +274,13 @@ def inventory(request):
         if catform.is_valid():
             catform.save()
             messages.success(request, 'successfully created')
-            return redirect('inventory')
+            return redirect('products')
     if request.method == "POST":
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'successfully created')
-            return redirect('inventory')
+            return redirect('products')
         
     context = {
         'catform':catform,
@@ -288,7 +288,16 @@ def inventory(request):
         'form':form,
         'products':products
     }
+    return render(request, 'ims/products.html', context)
+
+def inventory(request):
+    inventory_list = Inventory.objects.all()
+
+    context = {
+        'inventory_list':inventory_list
+    }
     return render(request, 'ims/inventory.html', context)
+
         
 def productEdit(request, pk):
     product = Product.objects.get(id=pk)

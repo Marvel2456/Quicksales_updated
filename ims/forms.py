@@ -29,6 +29,11 @@ class EditCategoryForm(ModelForm):
         model = Category
         fields = ('category_name',)
 
+class CreateInventoryForm(ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ('product', 'quantity', 'reorder_level', 'status')
+
 # class RestockForm(ModelForm):
 #     class Meta:
 #         model = Product

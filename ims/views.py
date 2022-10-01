@@ -6,7 +6,7 @@ from datetime import datetime
 from .models import Category, Product, Sale, SalesItem, Inventory
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, admin_only
-from . forms import ProductForm, EditProductForm, CategoryForm, EditCategoryForm
+from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm
 from django.http import JsonResponse
 import json
 # import datetime
@@ -65,7 +65,7 @@ def dashboard(request):
     }
     return render(request, 'ims/index.html', context)
 
-def category(request):
+def category_list(request):
     category = Category.objects.all()
     
     context = {
@@ -78,68 +78,33 @@ def delete_category(request, pk):
     if request.method == "POST":
         category.delete()
         messages.success(request, "Succesfully deleted")
-        return redirect('inventory')
+        return redirect('products')
     context = {
         'category':category
     }
     return render(request, 'ims/category_delete.html', context)
 
-def update_category(request, pk):
-    category = Category.objects.get(id=pk)
-    form = EditCategoryForm(instance=category)
-    if request.method == 'POST':
-        form = EditCategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'successfully created')
-            return redirect('inventory')
-    context = {
-        'category':category,
-        'form':form
-    }
-    return render(request, 'ims/category_edit.html', context)
-
 def store(request):
-    product = Product.objects.all()
+    inventory = Inventory.objects.all()
 
     context = {
-        
-        'product':product,
+        'inventory':inventory
     }
     return render(request, 'ims/store.html', context)
-
-
-def product_detail(request, pk):
-    product = Product.objects.get( id=pk )
-    # form = RestockForm()
-    # if request.method == "POST":
-    #     form = RestockForm(request.POST, instance=product)
-    #     if form.is_valid():
-    #         form.save()
-    #         messages.success(request, "Successfully updated")
-    #         return redirect('product_details', pk=product.id)
-    
-    
-    context = {
-        # 'form':form,
-        'product':product,
-    }
-
-    return render(request, 'ims/product_details.html', context)
 
 def delete_product(request, pk):
     product = Product.objects.get(id = pk)
     if request.method == "POST":
         product.delete()
         messages.success(request, "Succesfully deleted")
-        return redirect('inventory')
+        return redirect('products')
     context = {
         'product':product
     }
     return render(request, 'ims/product_delete.html', context)
 
 def cart(request):
-    product = Product.objects.all()
+    inventory = Inventory.objects.all()
     
     if request.user.is_authenticated:
         staff = request.user.staff
@@ -149,12 +114,12 @@ def cart(request):
     context = {
         'items':items,
         'sale':sale,
-        'product':product
+        'inventory':inventory
     }
     return render(request, 'ims/cart.html', context)
 
 def checkout(request):
-    product = Product.objects.all()
+    inventory = Inventory.objects.all()
     
     if request.user.is_authenticated:
         staff = request.user.staff
@@ -164,21 +129,21 @@ def checkout(request):
     context = {
         'items':items,
         'sale':sale,
-        'product':product
+        'inventory':inventory
     }
     return render(request, 'ims/checkout.html', context)
 
 def updateCart(request):
     data = json.loads(request.body)
-    productId = data['productId']
+    inventoryId = data['inventoryId']
     action = data['action']
-    print('Product:', productId)
+    print('inventory:', inventoryId)
     print('Action:', action)
 
     staff = request.user.staff
-    product = Product.objects.get(id=productId)
+    inventory = Inventory.objects.get(id=inventoryId)
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
-    saleItem, created = SalesItem.objects.get_or_create(sale=sale, product=product)
+    saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
 
     if action == 'add':
         saleItem.quantity = (saleItem.quantity + 1)
@@ -196,12 +161,12 @@ def updateCart(request):
 def updateQuantity(request):
     data = json.loads(request.body)
     input_value = int(data['val'])
-    product_Id = data['prod_id']
+    inventory_Id = data['invent_id']
     
     staff = request.user.staff
-    product = Product.objects.get(id=product_Id)
+    inventory = Inventory.objects.get(id=inventory_Id)
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
-    saleItem, created = SalesItem.objects.get_or_create(sale=sale, product=product)
+    saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
     saleItem.quantity = input_value
     saleItem.save()
 
@@ -253,10 +218,9 @@ def report(request):
     return render(request, 'ims/records.html')
 
 def reciept(request, pk):
-    
-    product = Product.objects.all()
+    inventory = Inventory.objects.all()
     sale, created = Sale.objects.get(id=pk, completed=True)
-    saleItem, created = SalesItem.objects.get(sale=sale, product=product)
+    saleItem, created = SalesItem.objects.get(sale=sale, inventory=inventory)
 
     context = {
         'saleItem':saleItem
@@ -264,9 +228,9 @@ def reciept(request, pk):
     return render(request, 'ims/reciept.html', context)
 
 
-def product(request):
+def product_category(request):
     products = Product.objects.all().order_by('-date_created')
-    category = Category.objects.all()
+    category = Category.objects.filter().all()
     form = ProductForm()
     catform = CategoryForm()
     if request.method == "POST":
@@ -290,30 +254,87 @@ def product(request):
     }
     return render(request, 'ims/products.html', context)
 
-def inventory(request):
-    inventory_list = Inventory.objects.all()
+def product(request, pk):
+    products = Product.objects.get(id=pk)
 
     context = {
-        'inventory_list':inventory_list
-    }
-    return render(request, 'ims/inventory.html', context)
+        'products':products
+    } 
+    return render(request, 'ims/modal_edit_product.html', context)
 
-        
-def productEdit(request, pk):
-    product = Product.objects.get(id=pk)
-    form = EditProductForm(instance=product)
+def edit_product(request):
     if request.method == 'POST':
-        form = EditProductForm(request.POST, instance=product)
+        product = Product.objects.get(id = request.POST.get('id'))
+        if product != None:
+            form = EditProductForm(request.POST, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'successfully updated')
+                return redirect('products')
+
+def category(request, pk):
+    category = Category.objects.get(id=pk)
+
+    context = {
+        'category':category
+    }
+    return render(request, 'ims/edit_category', context)
+
+def edit_category(request):
+    if request.method == 'POST':
+        category = Category.objects.get(id = request.POST.get('id'))
+        if category != None:
+            form = EditCategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'successfully updated')
+                return redirect('products')
+
+def inventory_list(request):
+    inventory = Inventory.objects.all()
+    product = Product.objects.filter().all()
+    form = CreateInventoryForm
+    if request.method == "POST":
+        form = CreateInventoryForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'successfully created')
-            return redirect('productedit',pk=product.id)
-    
+            return redirect('inventory')
+
     context = {
-        'form':form,
-        'product':product
+        'inventory':inventory,
+        'product':product,
+        'form':form
     }
-    return render(request, 'ims/productedit.html', context)
+    return render(request, 'ims/inventory.html', context)
+
+def inventory(request, pk):
+    inventory = Inventory.objects.get(id=pk)
+
+    context = {
+        'inventory':inventory
+    }
+    return render(request, 'ims/edit_inventory.html', context)
+
+def edit_inventory(request):
+    if request.method == 'POST':
+        inventory = Inventory.objects.get(id = request.POST.get('id'))
+        if inventory != None:
+            form = EditInventoryForm(request.POST, instance=inventory)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'successfully updated')
+                return redirect('inventorys')
+
+def restock(request):
+    if request.method == 'POST':
+        inventory = Inventory.objects.get(id = request.POST.get('id'))
+        if inventory != None:
+            form = RestockForm(request.POST, instance=inventory)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'successfully updated')
+                return redirect('inventorys')
 
 def staffs(request):
     return render(request, 'ims/staff.html')

@@ -30,7 +30,7 @@
         </div><!--row-->
        
         <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-            <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">Products</a>
+            <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">Inventory</a>
         </nav>
         
         <div class="tab-content" id="orders-table-tab-content">
@@ -56,19 +56,20 @@
                                             Add Inventory
                                         </a>
                                     </div>    
-                                    {% for products in products %}
+                                    {% for inventory in inventory %}
                                     <tr>
-                                        <td class="cell"><span class="truncate">{{products.product_name}}</span></td>
-                                        <td class="cell">{{products.category}}</td>
-                                        <td class="cell"><span></span><span class="note">{{products.quantity}}</span></td>
-                                        <td class="cell"><span class="note">{{products.last_updated}}</span></td>
-                                        <td class="cell"><span class="badge bg-success"><a href="{% url 'product_details' products.id %}">view</a></span></td>
+                                        <td class="cell"><span class="truncate">{{inventory.product.product_name}}</span></td>
+                                        <td class="cell">{{inventory.product.category}}</td>
+                                        <td class="cell"><span></span><span class="note">{{inventory.quantity}}</span></td>
+                                        <td class="cell"><span class="note">{{inventory.last_updated}}</span></td>
+                                        <td class="cell"><span class="badge bg-success"><a class="btn-sm app-btn-success" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#addRestockModal{{inventory.pk}}">restock</a></span></td>
                                         <td class="cell">
-                                            <a class="btn-sm app-btn-secondary" href="{% url 'productedit' products.id %}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
-                                            <a class="btn-sm app-btn-secondary" href="{% url 'product_delete' products.id %}"><i class="fa-solid fa-trash-can"></i></a>
+                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#editInventoryModal{{inventory.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
+                                            <a class="btn-sm app-btn-secondary" href="#"><i class="fa-solid fa-trash-can"></i></a>
                                         </td>
                                     </tr>
-
+                                    {% include 'ims/edit_inventory.html' %}
+                                    {% include 'ims/restock.html' %}
                                     {% endfor %}
                                     
                                 </tbody>

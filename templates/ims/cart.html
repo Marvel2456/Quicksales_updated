@@ -45,20 +45,20 @@
                                
                             </div><hr>
 
-                            {% comment %} {% for item in items %}
+                            {% for item in items %}
                                 <div class="row">
                                     
-                                        <div style="flex: 2;"><h6>{{item.product.product_name}}</h6></div>
-                                        <div style="flex: 1;"><h6>{{item.product.sale_price}}</h6></div>
+                                        <div style="flex: 2;"><h6>{{item.inventory.product.product_name}}</h6></div>
+                                        <div style="flex: 1;"><h6>{{item.inventory.sale_price}}</h6></div>
                                         <div style="flex: 2;">
                                             <h6 class="quantity">
-                                                <input type="number" class="Qty" data-product="{{item.product.id}}" value="{{item.quantity}}" name="quantity" min="0" max="100" style="width: 80%;">
+                                                <input type="number" class="Qty" data-inventory="{{item.inventory.id}}" value="{{item.quantity}}" name="quantity" min="0" max="100" style="width: 80%;">
                                             </h6>
                                         </div>
                                         <div style="flex: 1;"><h6 id="sub_total">{{item.get_total}}</h6></div>
                                     
                                 </div><hr>
-                            {% endfor %} {% endcomment %}
+                            {% endfor %}
                         </div>
 
                     </div>

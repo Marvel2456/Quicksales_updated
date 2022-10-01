@@ -1,4 +1,3 @@
-{% block content %}
 <!-- Modal -->
 <div class="modal fade" {% block modal-id %} id="addInventoryModal" {% endblock modal-id %} tabindex="-1" aria-labelledby="addInventoryModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -8,7 +7,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <!--Forms begins-->
-      <form {% block Action %} action="{% url 'products' %}" {% endblock Action %} method="POST" class="card p-3 border-dark mt-3" enctype="multipart/form-data">
+      <form {% block Action %} action="{% url 'inventorys' %}" {% endblock Action %} method="POST" class="card p-3 border-dark mt-3" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="modal-body">
@@ -16,15 +15,24 @@
         <!--==Block Id==-->
         {% block Value-id %}  {% endblock Value-id %}
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
-            <input name="product" type="text" class="form-control" placeholder="Product Name" required {% block Value-product %} {% endblock Value-product %}>
-          </div>
+        <div class="input-group mb-3">
+          <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <select id="id_product" name="product" class="form-select form-select-sm rounded-0" required {% block Value-category %} {% endblock Value-category %}>
+          {% if not inventory.product %}
+          <option value="" disabled selected>Select Product</option>
+          {% else %}
+          <option value="" disabled></option>
+          {% endif %}
+          {% for product in product %}
+              {% if inventory.product == product.id %}
+              <option value="{{ product.id }}" selected>{{ product.product_name }}</option>
+              {% else %}
+              <option value="{{ product.id }}">{{ product.product_name }}</option>
+              {% endif %}
+          {% endfor %}
+          </select>
+        </div>
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
-            <input name="status" type="text" class="form-control" placeholder="Product Name" required {% block Value-status %} {% endblock Value-status %}>
-          </div>
 
           <div class="input-group mb-3">
             <span class="side-label btn border-secondary bg-light"><i></i></span>
@@ -32,9 +40,24 @@
           </div>
 
           <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i class="fas fa-dollar-sign"></i></span>
+            <input name="cost_price" type="text" class="form-control" placeholder="Cost Price" required {% block Value-cost_price %} {% endblock Value-cost_price %}>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i class="fas fa-dollar-sign"></i></span>
+            <input name="sale_price" type="text" class="form-control" placeholder="Sale Price" required {% block Value-sale_price %} {% endblock Value-sale_price %}>
+          </div>
+
+          <div class="input-group mb-3">
             <span class="side-label btn border-secondary bg-light"><i></i></span>
             <input name="reorder_level" type="text" class="form-control" placeholder="Reorder Level" {% block Value-reorder_level %} {% endblock Value-reorder_level %}>
           </div>
+
+          {% comment %} <div class="input-group mb-3">
+            <span class="side-label btn border-secondary bg-light"><i></i></span>
+            {{form.status}}
+          </div> {% endcomment %}
 
           <div class="mt-4 text-center" style="width:100%;">
             <button type="submit" class="btn btn-secondary">
@@ -51,4 +74,3 @@
     </div>
   </div>
 </div>
-{% endblock content %}

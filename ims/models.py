@@ -1,5 +1,3 @@
-from tabnanny import verbose
-from tkinter.tix import Tree
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -35,8 +33,6 @@ class Product(models.Model):
     product_code = models.CharField(max_length=100)
     batch_no = models.CharField(max_length=20, blank=True, null=True)
     unit = models.CharField(max_length=50, blank=True, null=True)
-    cost_price = models.FloatField(blank=True, null=True)
-    sale_price = models.FloatField(blank=True, null=True)
     last_updated = models.DateField(auto_now=True,)
     date_created = models.DateTimeField(auto_now_add=True,)
     profit = models.FloatField(blank=True, null=True)
@@ -55,12 +51,17 @@ class Inventory(models.Model):
         ('Restocking', 'Currently out of stock'),
     )
     status = models.CharField(max_length=20, choices=choices, default="Available", blank=True, null=True)
+    cost_price = models.FloatField(blank=True, null=True)
+    sale_price = models.FloatField(blank=True, null=True)
     quantity_restocked = models.IntegerField(default=0, blank=True, null=True)
     count = models.IntegerField(default=0, blank=True, null=True)
     store = models.IntegerField(default=0)
     variance = models.IntegerField(default=0)
     last_updated = models.DateField(auto_now=True,)
     date_created = models.DateTimeField(auto_now_add=True,)
+
+    class Meta:
+        verbose_name_plural = "inventories"
 
     def __str__(self):
         return self.product.product_name
@@ -102,20 +103,20 @@ class Sale(models.Model):
         return profit
 
 class SalesItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
     total = models.FloatField(default=0)
     quantity = models.IntegerField(default=0, blank=True, null=True)
     
     def __str__(self):
-        return self.product.product_name
+        return self.inventory.product.product_name
     
     @property
     def get_total(self):
-        total = self.product.sale_price * self.quantity
+        total = self.inventory.sale_price * self.quantity
         return total
 
     @property
     def get_profit(self):
-        profit = self.product.sale_price - self.product.cost_price
+        profit = self.inventory.sale_price - self.inventory.cost_price
         return profit

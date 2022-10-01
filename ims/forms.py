@@ -7,7 +7,7 @@ from . models import *
 class ProductForm(ModelForm):
     class Meta:
        model = Product
-       fields = ('product_name', 'category', 'brand', 'cost_price', 'sale_price', 'unit', 'batch_no')
+       fields = ('product_name', 'category', 'brand', 'unit', 'batch_no')
        
        widgets = {
            'category': forms.Select(attrs={'class':'form-select', 'placeholder':'Category', 'required':True, 'title':'Select Category'})
@@ -17,7 +17,7 @@ class ProductForm(ModelForm):
 class EditProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ('product_name', 'brand', 'cost_price', 'sale_price', 'unit', 'batch_no',)
+        fields = ('product_name', 'category', 'brand', 'unit', 'batch_no',)
 
 class CategoryForm(ModelForm):
     class Meta:
@@ -32,9 +32,14 @@ class EditCategoryForm(ModelForm):
 class CreateInventoryForm(ModelForm):
     class Meta:
         model = Inventory
-        fields = ('product', 'quantity', 'reorder_level', 'status')
+        fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')
 
-# class RestockForm(ModelForm):
-#     class Meta:
-#         model = Product
-#         fields = ('quantity_restocked', 'sale_price', 'cost_price')
+class RestockForm(ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ('quantity_restocked', 'sale_price', 'cost_price')
+
+class EditInventoryForm(ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')

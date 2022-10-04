@@ -65,25 +65,6 @@ def dashboard(request):
     }
     return render(request, 'ims/index.html', context)
 
-def category_list(request):
-    category = Category.objects.all()
-    
-    context = {
-        'category':category,
-    }
-    return render(request, 'ims/category.html', context)
-
-def delete_category(request, pk):
-    category = Category.objects.get(id = pk)
-    if request.method == "POST":
-        category.delete()
-        messages.success(request, "Succesfully deleted")
-        return redirect('products')
-    context = {
-        'category':category
-    }
-    return render(request, 'ims/category_delete.html', context)
-
 def store(request):
     inventory = Inventory.objects.all()
 
@@ -91,17 +72,6 @@ def store(request):
         'inventory':inventory
     }
     return render(request, 'ims/store.html', context)
-
-def delete_product(request, pk):
-    product = Product.objects.get(id = pk)
-    if request.method == "POST":
-        product.delete()
-        messages.success(request, "Succesfully deleted")
-        return redirect('products')
-    context = {
-        'product':product
-    }
-    return render(request, 'ims/product_delete.html', context)
 
 def cart(request):
     inventory = Inventory.objects.all()
@@ -191,8 +161,8 @@ def sale_complete(request):
     sale.final_total_price = sale.get_cart_total
 
     if total == sale.get_cart_total:
-        sale.completed = True
-    sale.save()
+        sale.completed = True   
+    sale.save()   
 
     return JsonResponse('Payment completed', safe=False)
 
@@ -203,27 +173,34 @@ def sales(request):
         'sale':sale,
     }
     return render(request, 'ims/sales.html', context)
-def sale_delete(request, pk):
+
+def sale(request, pk):
     sale = Sale.objects.get(id=pk)
-    if request.method == "POST":
-        sale.delete()
-        messages.success(request, "Succesfully deleted")
-        return redirect('sales')
+
     context = {
         'sale':sale
     }
     return render(request, 'ims/sales_delete.html', context)
 
+def sale_delete(request):
+    if request.method == 'POST':
+        sale = Sale.objects.get(id = request.POST.get('id'))
+        if sale != None:
+            sale.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('sales')
+    
+
 def report(request):
     return render(request, 'ims/records.html')
 
 def reciept(request, pk):
-    inventory = Inventory.objects.all()
-    sale, created = Sale.objects.get(id=pk, completed=True)
-    saleItem, created = SalesItem.objects.get(sale=sale, inventory=inventory)
-
+    sale = Sale.objects.get(id = pk)
+    salesitem = SalesItem.objects.filter(sale_id=sale).all()
+    
     context = {
-        'saleItem':saleItem
+        'salesitem':salesitem,
+        'sale':sale
     }
     return render(request, 'ims/reciept.html', context)
 
@@ -272,6 +249,22 @@ def edit_product(request):
                 messages.success(request, 'successfully updated')
                 return redirect('products')
 
+def delete_product(request):
+    if request.method == 'POST':
+        product = Product.objects.get(id = request.POST.get('id'))
+        if product != None:
+            product.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('products')
+
+def category_list(request):
+    category = Category.objects.all()
+    
+    context = {
+        'category':category,
+    }
+    return render(request, 'ims/category.html', context)
+
 def category(request, pk):
     category = Category.objects.get(id=pk)
 
@@ -290,6 +283,14 @@ def edit_category(request):
                 messages.success(request, 'successfully updated')
                 return redirect('products')
 
+def delete_category(request):
+    if request.method == 'POST':
+        category = Category.objects.get(id = request.POST.get('id'))
+        if category != None:
+            category.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('products')
+
 def inventory_list(request):
     inventory = Inventory.objects.all()
     product = Product.objects.filter().all()
@@ -299,7 +300,7 @@ def inventory_list(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'successfully created')
-            return redirect('inventory')
+            return redirect('inventorys')
 
     context = {
         'inventory':inventory,
@@ -332,9 +333,19 @@ def restock(request):
         if inventory != None:
             form = RestockForm(request.POST, instance=inventory)
             if form.is_valid():
-                form.save()
+                form.save(commit=False)
+                inventory.quantity += inventory.quantity_restocked
+                inventory.save()
                 messages.success(request, 'successfully updated')
                 return redirect('inventorys')
+
+def delete_inventory(request, pk):
+    if request.method == 'POST':
+        inventory = Inventory.objects.get(id = request.POST.get('id'))
+        if inventory != None:
+            inventory.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('inventorys')
 
 def staffs(request):
     return render(request, 'ims/staff.html')

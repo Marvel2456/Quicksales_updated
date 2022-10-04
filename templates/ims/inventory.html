@@ -60,14 +60,15 @@
                                     <tr>
                                         <td class="cell"><span class="truncate">{{inventory.product.product_name}}</span></td>
                                         <td class="cell">{{inventory.product.category}}</td>
-                                        <td class="cell"><span></span><span class="note">{{inventory.quantity}}</span></td>
+                                        <td class="cell"><span></span><span class="note">{{inventory.store_quantity}}</span></td>
                                         <td class="cell"><span class="note">{{inventory.last_updated}}</span></td>
                                         <td class="cell"><span class="badge bg-success"><a class="btn-sm app-btn-success" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#addRestockModal{{inventory.pk}}">restock</a></span></td>
                                         <td class="cell">
                                             <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#editInventoryModal{{inventory.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
-                                            <a class="btn-sm app-btn-secondary" href="#"><i class="fa-solid fa-trash-can"></i></a>
+                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#deleteInventoryModal{{inventory.pk}}"><i class="fa-solid fa-trash-can"></i></a>
                                         </td>
                                     </tr>
+                                    {% include 'ims/delete_inventory.html' %}
                                     {% include 'ims/edit_inventory.html' %}
                                     {% include 'ims/restock.html' %}
                                     {% endfor %}

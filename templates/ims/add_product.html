@@ -15,13 +15,13 @@
         <!--==Block Id==-->
         {% block Value-id %}  {% endblock Value-id %}
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <div class="mb-3">
+            <label for="product_name" class="form-label">Product</label>
             <input name="product_name" type="text" class="form-control" placeholder="Product Name" required {% block Value-product_name %} {% endblock Value-product_name %}>
           </div>
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
             <select id="id_category" name="category" class="form-select form-select-sm rounded-0" required {% block Value-category %} {% endblock Value-category %}>
             {% if not products.category %}
             <option value="" disabled selected>Select Category</option>
@@ -38,18 +38,18 @@
             </select>
           </div>
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <div class="mb-3">
+            <label for="brand" class="form-label">Brand</label>
             <input name="brand" type="text" class="form-control" placeholder="Brand" required {% block Value-brand %} {% endblock Value-brand %}>
           </div>
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <div class="mb-3">
+            <label for="unit" class="form-label">Unit</label>
             <input name="unit" type="text" class="form-control" placeholder="Unit" {% block Value-unit %} {% endblock Value-unit %}>
           </div>
 
-          <div class="input-group mb-3">
-            <span class="side-label btn border-secondary bg-light"><i></i></span>
+          <div class="mb-3">
+            <label for="batch_no" class="form-label">Batch No</label>
             <input name="batch_no" type="text" class="form-control" placeholder="Batch No" {% block Value-batch_no %} {% endblock Value-batch_no %}>
           </div>
           <div class="mt-4 text-center" style="width:100%;">

@@ -63,9 +63,10 @@
                                         <td class="cell"><span class="note">{{products.last_updated}}</span></td>
                                         <td class="cell">
                                             <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" data-bs-target="#editProductModal{{products.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
-                                            <a class="btn-sm app-btn-secondary" href="{% url 'product_delete' products.id %}"><i class="fa-solid fa-trash-can"></i></a>
+                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" data-bs-target="#deleteProductModal{{products.pk}}"><i class="fa-solid fa-trash-can"></i></a>
                                         </td>
                                     </tr>
+                                    {% include 'ims/delete_product.html' %}
                                     {% include 'ims/modal_edit_product.html' %}
                                     {% endfor %}
                                     
@@ -116,11 +117,11 @@
                                         <td class="cell">{{category.category_name}}</td>
                                         <td class="cell"><span class="note">{{category.last_updated}}</span></td>
                                         <td class="cell">
-                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" data-bs-target="#editCategoryModal{{category.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
-                                            <a class="btn-sm app-btn-secondary" href="{% url 'category_delete' category.id %}"><i class="fa-solid fa-trash-can"></i></a>
+                                            <a class="btn-sm app-btn-secondary" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#editCategoryModal{{category.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
+                                            <a class="btn-sm app-btn-secondary" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal{{category.pk}}"><i class="fa-solid fa-trash-can"></i></a>
                                         </td>
                                     </tr>
-
+                                    {% include 'ims/category_delete.html' %}
                                     {% include 'ims/edit_category.html' %}
                                     {% endfor %}
 

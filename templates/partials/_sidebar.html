@@ -65,7 +65,9 @@
                     </a><!--//nav-link-->
                     <div id="submenu-1" class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
-                            <li class="submenu-item"><a class="submenu-link" href="{% url 'category_list' %}">Notifications</a></li>
+                            {% for category in category %}
+                            <li class="submenu-item"><a class="submenu-link" href="{% url 'category_list' %}">{{category.category_name}}</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </li><!--//nav-item-->

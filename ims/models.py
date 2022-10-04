@@ -65,6 +65,12 @@ class Inventory(models.Model):
 
     def __str__(self):
         return self.product.product_name
+
+    @property
+    def store_quantity(self):
+        salesitem = self.salesitem_set.all()
+        store = self.quantity - sum([item.quantity for item in salesitem])
+        return store
     
 class Sale(models.Model):
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
@@ -101,6 +107,7 @@ class Sale(models.Model):
         salesitem = self.salesitem_set.all()
         profit = sum([item.get_profit for item in salesitem])
         return profit
+        # display daily profits on the dashboard and on the sales page
 
 class SalesItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
@@ -109,7 +116,7 @@ class SalesItem(models.Model):
     quantity = models.IntegerField(default=0, blank=True, null=True)
     
     def __str__(self):
-        return self.inventory.product.product_name
+        return str(self.inventory)
     
     @property
     def get_total(self):

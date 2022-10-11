@@ -18,6 +18,7 @@
           <div class="mb-3">
             <label for="product_name" class="form-label">Product</label>
             <input name="product_name" type="text" class="form-control" placeholder="Product Name" required {% block Value-product_name %} {% endblock Value-product_name %}>
+            <div class="m-3" style="color:red;">{{form.product_name.errors}}</div>
           </div>
 
           <div class="mb-3">

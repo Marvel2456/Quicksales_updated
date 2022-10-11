@@ -79,45 +79,25 @@
                 <div class="pagination">
                     <span class="step-links">
                       <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                        {% if products_page.has_previous %}
-                        {% comment %} <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> {% endcomment %}
-                        <li class="page-item"><a class="page-link" href="?page={{ products_page.previous_page_number }}">previous</a></li>
-                        {% endif %}
-                        {% for i in nums %}
-                        <span class="current">
-                          <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
-                        </span>
-                        {% endfor %}
-                  
-                        {% if products_page.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ products_page.next_page_number }}">next</a></li>
-                        {% comment %} <li class="page-item"><a class="page-link" href="?page={{ product_page.paginator.num_pages }}">last &raquo;</a></li> {% endcomment %}
-                        {% endif %}
+                        <ul class="pagination" style="color:yellow;">
+                            {% if products_page.has_previous %}
+                            {% comment %} <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> {% endcomment %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ products_page.previous_page_number }}">previous</a></li>
+                            {% endif %}
+                            {% for i in nums %}
+                            <span class="current">
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+                            </span>
+                            {% endfor %}
+                    
+                            {% if products_page.has_next %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ products_page.next_page_number }}">next</a></li>
+                            {% comment %} <li class="page-item"><a class="page-link" href="?page={{ product_page.paginator.num_pages }}">last &raquo;</a></li> {% endcomment %}
+                            {% endif %}
                         </ul>
                       </nav>
                     </span>
                 </div>
-                {% comment %} <nav class="app-pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if products_page.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ products_page.previous_page_number }}">Previous</a>
-                        </li>
-                        {% endif %}
-                        {% for i in nums %}
-                        <li class="page-item" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
-                        {% endfor %} {% endcomment %}
-                        {% comment %} <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li> {% endcomment %}
-                        {% comment %} {% if products_page.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ products_page.next_page_number }}">Next</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav><!--app-pagination--> {% endcomment %}
-                
             </div><!--tab-pane-->
         </div><!--//tab-content-->
         

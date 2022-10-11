@@ -261,21 +261,27 @@ def delete_product(request):
 
 def category_list(request):
     category = Category.objects.all()
+    paginator = Paginator(Category.objects.all(), 3)
+    page = request.GET.get('page')
+    category_page = paginator.get_page(page)
+    nums = "a" *category_page.paginator.num_pages
     category_contains = request.GET.get('category_name')
-    catform = CategoryForm()
+    form = CategoryForm()
     if request.method == "POST":
-        catform = CategoryForm(request.POST)
-        if catform.is_valid():
-            catform.save()
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
             messages.success(request, 'successfully created')
-            return redirect('category')
+            return redirect('category_list')
             
     if category_contains != '' and category_contains is not None:
-        category = category.filter(category_name__icontains=category_contains)
+        category_page = category.filter(category_name__icontains=category_contains)
 
     context = {
-        'catform':catform,
         'category':category,
+        'form':form,
+        'category_page':category_page,
+        'nums':nums
     }
     return render(request, 'ims/category.html', context)
 
@@ -295,7 +301,7 @@ def edit_category(request):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'successfully updated')
-                return redirect('products')
+                return redirect('category_list')
 
 def delete_category(request):
     if request.method == 'POST':
@@ -303,7 +309,7 @@ def delete_category(request):
         if category != None:
             category.delete()
             messages.success(request, "Succesfully deleted")
-            return redirect('products')
+            return redirect('category_list')
 
 def inventory_list(request):
     inventory = Inventory.objects.all()

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Inventory {% endblock title %}
+{% block title %} Category {% endblock title %}
 
 {% block content %}
 
@@ -54,7 +54,7 @@
                                     </a>
                                 </div>  
                                 <tbody>
-                                    {% for category in category %}
+                                    {% for category in category_page %}
                                     <tr>
                                         <td class="cell">{{category.category_name}}</td>
                                         <td class="cell"><span class="note">{{category.last_updated}}</span></td>
@@ -73,19 +73,28 @@
                        
                     </div><!--app-card-body-->		
                 </div><!--app-card-->
-                <nav class="app-pagination">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav><!--app-pagination-->
+                <div class="pagination">
+                    <span class="step-links">
+                      <nav aria-label="Page navigation example">
+                        <ul class="pagination" style="color:yellow;">
+                            {% if category_page.has_previous %}
+                            {% comment %} <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> {% endcomment %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ category_page.previous_page_number }}">previous</a></li>
+                            {% endif %}
+                            {% for i in nums %}
+                            <span class="current">
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+                            </span>
+                            {% endfor %}
+                    
+                            {% if category_page.has_next %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ category_page.next_page_number }}">next</a></li>
+                            {% comment %} <li class="page-item"><a class="page-link" href="?page={{ product_page.paginator.num_pages }}">last &raquo;</a></li> {% endcomment %}
+                            {% endif %}
+                        </ul>
+                      </nav>
+                    </span>
+                </div>
                 
             </div><!--tab-pane-->
             

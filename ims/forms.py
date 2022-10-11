@@ -17,31 +17,10 @@ class ProductForm(ModelForm):
         super(ProductForm, self).clean()
 
         product_name = self.cleaned_data.get('product_name')
-        category = self.cleaned_data.get('category')
-        brand = self.cleaned_data.get('brand')
-        unit = self.cleaned_data.get('unit')
-        batch_no = self.cleaned_data.get('batch_no')
-
-        if not product_name:
-            self._errors['product_name'] = self.error_class([
-                'This field is required'])
-        if not category:
-            self._errors['category'] = self.error_class([
-                'This field is required'])
-        if not brand:
-            self._errors['brand'] = self.error_class([
-                'This field is required'])
-        if not unit:
-            self._errors['unit'] = self.error_class([
-                'This field is required'])
-        if not batch_no:
-            self._errors['batch_no'] = self.error_class([
-                'This field is required'])
-
         for product in Product.objects.all():
             if product.product_name == product_name:
                 self._errors['product_name'] = self.error_class([
-                'This product already exists'])
+                'The product you tried to create already exists'])
 
         return self.cleaned_data   
 
@@ -55,13 +34,17 @@ class CategoryForm(ModelForm):
         model = Category
         fields = ('category_name',)
 
-    def clean_category_name(self):
+    def clean(self):
+        super(CategoryForm, self).clean()
+
         category_name = self.cleaned_data.get('category_name')
-        if not category_name:
-            raise forms.ValidationError('This field is required')
+
         for category in Category.objects.all():
             if category.category_name == category_name:
-                raise forms.ValidationError(category_name + 'already exists')
+                self._errors['category_name'] = self.error_class([
+                'The category you tried to create already exists'])
+
+        return self.cleaned_data   
 
 class EditCategoryForm(ModelForm):
     class Meta:
@@ -73,15 +56,17 @@ class CreateInventoryForm(ModelForm):
         model = Inventory
         fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')
 
-class InventorySearchForm(forms.ModelForm):
-    class Meta:
-        model = Inventory
-        fields = ('product',)
+    def clean(self):
+        super(CreateInventoryForm, self).clean()
 
-class ProductSearchForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = ('product_name',)
+        product = self.cleaned_data.get('product')
+
+        for inventory in Inventory.objects.all():
+            if inventory.product.product_name == product.product_name:
+                self._errors['product'] = self.error_class([
+                'The inventory you tried to create already exists'])
+
+        return self.cleaned_data   
 
 class RestockForm(ModelForm):
     class Meta:

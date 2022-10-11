@@ -7,7 +7,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <!--Forms begins-->
-      <form {% block Action %} action="{% url 'products' %}" {% endblock Action %} method="POST" class="card p-3 border-dark mt-3" enctype="multipart/form-data">
+      <form {% block Action %} action="{% url 'category_list' %}" {% endblock Action %} method="POST" class="card p-3 border-dark mt-3" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="modal-body">
@@ -17,12 +17,8 @@
 
           <div class="mb-3">
             <label for="category_name" class="form-label">Name</label>
-            <input name="category_name" type="text" class="form-control"  id="category_name" placeholder="Category Name" required {% block Value-category_name %} {% endblock Value-category_name %}>
-            {% comment %} {% for err in catform.error %} {% endcomment %}
-            <div class="invalid-feedback">
-              cannot create an empty category
-            </div>
-            {% comment %} {% endfor %} {% endcomment %}
+            <input name="category_name" type="text" class="form-control" placeholder="Category Name" required {% block Value-category_name %} {% endblock Value-category_name %}>
+            <div class="m-3" style="color:red;">{{form.category_name.errors}}</div>
           </div>
 
           <div class="mt-4 text-center" style="width:100%;">

@@ -18,6 +18,9 @@
     
     <!-- App CSS -->  
     <link id="theme-style" rel="stylesheet" href="{% static 'assets/css/portal.css' %}">
+    <link rel="stylesheet" href-"{% static 'assets/css/bootstrap.min.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap.min.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap5.min.css' %}">
     
 </head> 
 
@@ -45,7 +48,8 @@
     
     <!-- Javascript -->          
     <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>  
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    
 
     <!-- Charts JS -->
     <script src="{% static 'assets/plugins/chart.js/chart.min.js' %}"></script> 
@@ -54,6 +58,10 @@
     <!-- Page Specific JS -->
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/cart.js' %}"></script>
+    <script src="{% static 'assets/js/jQuery 3.6.1.min.js' %}"></script>
+    {% comment %} <script src="{% static 'assets/js/dataTables.bootstrap.min.js' %}"></script> {% endcomment %}
+    <script src="{% static 'assets/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
     <script>
         let user = '{{request.user}}'
     </script>
@@ -75,6 +83,18 @@
         }
         const csrftoken = getCookie('csrftoken');
     </script>
+    {% comment %} <script>
+        $("#example").DataTable({
+
+            paging: true,
+            pageLength: 10,
+            lengthChange: true,
+            autoWidth: true,
+            searching: true,
+            bInfo: true,
+            bSort: true,
+        })
+    </script> {% endcomment %}
 
 </body>
 </html>

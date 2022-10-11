@@ -7,6 +7,7 @@ from .models import Category, Product, Sale, SalesItem, Inventory
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
 # import datetime
@@ -204,30 +205,31 @@ def reciept(request, pk):
     }
     return render(request, 'ims/reciept.html', context)
 
-
 def product_category(request):
     products = Product.objects.all().order_by('-date_created')
     category = Category.objects.filter().all()
+    paginator = Paginator(Product.objects.all(), 3)
+    page = request.GET.get('page')
+    products_page = paginator.get_page(page)
+    nums = "a" *products_page.paginator.num_pages
+    product_contains = request.GET.get('product_name')
     form = ProductForm()
-    catform = CategoryForm()
-    if request.method == "POST":
-        catform = CategoryForm(request.POST)
-        if catform.is_valid():
-            catform.save()
-            messages.success(request, 'successfully created')
-            return redirect('products')
     if request.method == "POST":
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'successfully created')
             return redirect('products')
+
+    if product_contains != '' and product_contains is not None:
+        products_page = products.filter(product_name__icontains=product_contains)
         
     context = {
-        'catform':catform,
         'category':category,
         'form':form,
-        'products':products
+        'products':products,
+        'products_page':products_page,
+        'nums':nums
     }
     return render(request, 'ims/products.html', context)
 
@@ -259,8 +261,20 @@ def delete_product(request):
 
 def category_list(request):
     category = Category.objects.all()
-    
+    category_contains = request.GET.get('category_name')
+    catform = CategoryForm()
+    if request.method == "POST":
+        catform = CategoryForm(request.POST)
+        if catform.is_valid():
+            catform.save()
+            messages.success(request, 'successfully created')
+            return redirect('category')
+            
+    if category_contains != '' and category_contains is not None:
+        category = category.filter(category_name__icontains=category_contains)
+
     context = {
+        'catform':catform,
         'category':category,
     }
     return render(request, 'ims/category.html', context)
@@ -294,6 +308,7 @@ def delete_category(request):
 def inventory_list(request):
     inventory = Inventory.objects.all()
     product = Product.objects.filter().all()
+    product_contains_query = request.GET.get('product')
     form = CreateInventoryForm
     if request.method == "POST":
         form = CreateInventoryForm(request.POST)
@@ -301,6 +316,9 @@ def inventory_list(request):
             form.save()
             messages.success(request, 'successfully created')
             return redirect('inventorys')
+    
+    if product_contains_query != '' and product_contains_query is not None:
+        inventory = inventory.filter(product__product_name__icontains=product_contains_query)
 
     context = {
         'inventory':inventory,
@@ -339,7 +357,7 @@ def restock(request):
                 messages.success(request, 'successfully updated')
                 return redirect('inventorys')
 
-def delete_inventory(request, pk):
+def delete_inventory(request):
     if request.method == 'POST':
         inventory = Inventory.objects.get(id = request.POST.get('id'))
         if inventory != None:

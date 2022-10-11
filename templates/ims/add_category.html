@@ -17,7 +17,12 @@
 
           <div class="mb-3">
             <label for="category_name" class="form-label">Name</label>
-            <input name="category_name" type="text" class="form-control" placeholder="Category Name" required {% block Value-category_name %} {% endblock Value-category_name %}>
+            <input name="category_name" type="text" class="form-control"  id="category_name" placeholder="Category Name" required {% block Value-category_name %} {% endblock Value-category_name %}>
+            {% comment %} {% for err in catform.error %} {% endcomment %}
+            <div class="invalid-feedback">
+              cannot create an empty category
+            </div>
+            {% comment %} {% endfor %} {% endcomment %}
           </div>
 
           <div class="mt-4 text-center" style="width:100%;">
@@ -35,3 +40,4 @@
     </div>
   </div>
 </div>
+

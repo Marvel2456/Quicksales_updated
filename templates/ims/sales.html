@@ -14,16 +14,27 @@
                  <div class="page-utilities">
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                         <div class="col-auto">
-                            <form class="table-search-form row gx-1 align-items-center">
+                            <form class="table-search-form row gx-1 align-items-center" method="GET" action=".">
                                 <div class="col-auto">
-                                    <input type="text" id="search-orders" name="searchorders" class="form-control search-orders" placeholder="Search">
+                                    <label for="start_date">Start Date</label>
+                                    <div class="input-group mb-3 date" id="datepicker">
+                                        <input type="text" class="form-control" name="start_date" id="due" placeholder="yy-mm-dd" aria-describedby="basic-addon2">
+                                        <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-calendar"></i></span>
+                                    </div>
                                 </div>
+                                <div class="col-auto">
+                                    <label for="end_date">End Date</label>
+                                    <div class="input-group mb-3 date" id="datepicker">
+                                        <input type="text" class="form-control" name="end_date" id="due2" placeholder="yy-mm-dd" aria-describedby="basic-addon2">
+                                        <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-calendar"></i></span>
+                                    </div>
+                                </div> 
                                 <div class="col-auto">
                                     <button type="submit" class="btn app-btn-secondary">Search</button>
-                                </div>
+                                </div>  
                             </form>
-                            
                         </div><!--//col-->
+                        
                     </div><!--//row-->
                 </div><!--//table-utilities-->
             </div><!--//col-auto-->
@@ -48,11 +59,11 @@
                                 </thead>
                                 
                                 <tbody>
-                                    {% for sale in sale %}
+                                    {% for sale in sale_page %}
                                     <tr>
                                         <td class="cell">{{sale.staff}}</td>
                                         <td class="cell"><span class="truncate">{{sale.transaction_id}}</span></td>
-                                        <td class="cell"><span>{{sale.date_added}}</span></td>
+                                        <td class="cell"><span>{{sale.date_updated}}</span></td>
                                         <td class="cell"><span class="badge bg-success">{{sale.get_cart_items}}</span></td>
                                         <td class="cell">{{sale.final_total_price}}</td>
                                         <td class="cell">
@@ -70,10 +81,26 @@
                        
                     </div><!--//app-card-body-->		
                 </div><!--//app-card-->
-        </div><!--//tab-content-->
-        
-        
-        
+                <div class="pagination">
+                    <span class="step-links">
+                      <nav aria-label="Page navigation example">
+                        <ul class="pagination" style="color:yellow;">
+                            {% if sale_page.has_previous %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ sale_page.previous_page_number }}">previous</a></li>
+                            {% endif %}
+                            {% for i in nums %}
+                            <span class="current">
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+                            </span>
+                            {% endfor %}
+                            {% if sale_page.has_next %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ sale_page.next_page_number }}">next</a></li>
+                            {% endif %}
+                        </ul>
+                      </nav>
+                    </span>
+                </div>
+        </div><!--//tab-content-->             
     </div><!--//container-fluid-->
 </div><!--//app-content-->
 

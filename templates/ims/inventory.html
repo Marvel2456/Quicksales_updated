@@ -57,10 +57,10 @@
                                             Add Inventory
                                         </a>
                                     </div>    
-                                    {% for inventory in inventory %}
+                                    {% for inventory in inventory_page %}
                                     <tr>
                                         <td class="cell"><span class="truncate">{{inventory.product.product_name}}</span></td>
-                                        <td class="cell">{{inventory.product.category}}</td>
+                                        <td class="cell">{{inventory.quantity_sold_date|date:"D, d M, Y"}}</td>
                                         <td class="cell"><span></span><span class="note">{{inventory.store_quantity}}</span></td>
                                         <td class="cell"><span class="note">{{inventory.last_updated}}</span></td>
                                         <td class="cell"><span class="badge bg-success"><a class="btn-sm app-btn-success" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#addRestockModal{{inventory.pk}}">restock</a></span></td>
@@ -80,19 +80,25 @@
                        
                     </div><!--app-card-body-->		
                 </div><!--app-card-->
-                <nav class="app-pagination">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav><!--app-pagination-->
+                <div class="pagination">
+                    <span class="step-links">
+                      <nav aria-label="Page navigation example">
+                        <ul class="pagination" style="color:yellow;">
+                            {% if inventory_page.has_previous %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ inventory_page.previous_page_number }}">previous</a></li>
+                            {% endif %}
+                            {% for i in nums %}
+                            <span class="current">
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+                            </span>
+                            {% endfor %}
+                            {% if inventory_page.has_next %}
+                            <li class="page-item"><a class="page-link" style="color:grey;" href="?page={{ inventory_page.next_page_number }}">next</a></li>
+                            {% endif %}
+                        </ul>
+                      </nav>
+                    </span>
+                </div>
                 
             </div><!--tab-pane-->
             

@@ -1,3 +1,4 @@
+from datetime import date
 from enum import unique
 from django.db import models
 from django.contrib.auth.models import User
@@ -72,6 +73,18 @@ class Inventory(models.Model):
         salesitem = self.salesitem_set.all()
         store = self.quantity - sum([item.quantity for item in salesitem])
         return store
+
+    @property
+    def quantity_sold(self):
+        salesitem = self.salesitem_set.all()
+        sold = sum([item.quantity for item in salesitem])
+        return sold
+
+    # @property
+    # def quantity_sold_date(self):
+    #     salesitem = self.salesitem_set.all()
+    #     date_sold = [item.last_updated for item in salesitem]
+    #     return date_sold
     
 class Sale(models.Model):
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
@@ -80,7 +93,7 @@ class Sale(models.Model):
         ('Promo', 'Promo'),
     )
     mode_of_sales = models.CharField(max_length=50, choices=choices,default="General", blank=True, null=True)
-    total_price = models.FloatField(default=0, blank=True, null=True)
+    total_profit = models.FloatField(default=0, blank=True, null=True)
     final_total_price = models.FloatField(default=0, blank=True, null=True)
     discount =  models.FloatField(default=0, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -115,6 +128,7 @@ class SalesItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
     total = models.FloatField(default=0)
     quantity = models.IntegerField(default=0, blank=True, null=True)
+    last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
     
     def __str__(self):
         return str(self.inventory)

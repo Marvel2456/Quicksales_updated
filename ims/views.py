@@ -1,3 +1,4 @@
+from turtle import title
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -9,6 +10,10 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.db.models import Max
+# from django_pandas.io import read_frame
+# import plotly
+# import plotly.express as px
 import json
 # import datetime
 
@@ -56,21 +61,46 @@ def dashboard(request):
         date_added__day = current_day
     ).all()
     total_sales = sum(today_sales.values_list('final_total_price',flat=True))
+    today_profit = Sale.objects.filter(
+        date_added__year=current_year,
+        date_added__month = current_month,
+        date_added__day = current_day
+    ).all()
+    total_profits = sum(today_profit.values_list('total_profit', flat=True))
+    sale = Sale.objects.all()
+
+
+
+
     context = {
         'products':products,
         'category':category,
         'total_product':total_product,
         'total_category':total_category,
         'transaction':transaction,
-        'total_sales':total_sales
+        'total_sales':total_sales,
+        'total_profits':total_profits,
+        'sale':sale
+        # 'sale_graph':sale_graph,
     }
     return render(request, 'ims/index.html', context)
 
 def store(request):
     inventory = Inventory.objects.all()
+    paginator = Paginator(Inventory.objects.all(), 3)
+    page = request.GET.get('page')
+    inventory_page = paginator.get_page(page)
+    nums = "a" *inventory_page.paginator.num_pages
+    product_contains_query = request.GET.get('product')
+
+    if product_contains_query != '' and product_contains_query is not None:
+        inventory_page = inventory.filter(product__product_name__icontains=product_contains_query)
+
 
     context = {
-        'inventory':inventory
+        'inventory':inventory,
+        'inventory_page':inventory_page,
+        'nums':nums
     }
     return render(request, 'ims/store.html', context)
 
@@ -160,6 +190,7 @@ def sale_complete(request):
     sale.transaction_id = transaction_id
     total = float(data['payment']['total_cart'])
     sale.final_total_price = sale.get_cart_total
+    sale.total_profit = sale.get_total_profit
 
     if total == sale.get_cart_total:
         sale.completed = True   
@@ -169,9 +200,23 @@ def sale_complete(request):
 
 def sales(request):
     sale = Sale.objects.all()
+    paginator = Paginator(Sale.objects.all(), 10)
+    page = request.GET.get('page')
+    sale_page = paginator.get_page(page)
+    nums = "a" *sale_page.paginator.num_pages
+    start_date_contains = request.GET.get('start_date')
+    end_date_contains = request.GET.get('end_date')
+
+    if start_date_contains != '' and start_date_contains is not None:
+        sale_page = sale.filter(date_updated__gte=start_date_contains)
+
+    if end_date_contains != '' and end_date_contains is not None:
+        sale_page = sale.filter(date_updated__lte=end_date_contains)
 
     context = {
         'sale':sale,
+        'sale_page':sale_page,
+        'nums':nums
     }
     return render(request, 'ims/sales.html', context)
 
@@ -314,6 +359,10 @@ def delete_category(request):
 def inventory_list(request):
     inventory = Inventory.objects.all()
     product = Product.objects.filter().all()
+    paginator = Paginator(Inventory.objects.all(), 3)
+    page = request.GET.get('page')
+    inventory_page = paginator.get_page(page)
+    nums = "a" *inventory_page.paginator.num_pages
     product_contains_query = request.GET.get('product')
     form = CreateInventoryForm
     if request.method == "POST":
@@ -324,12 +373,14 @@ def inventory_list(request):
             return redirect('inventorys')
     
     if product_contains_query != '' and product_contains_query is not None:
-        inventory = inventory.filter(product__product_name__icontains=product_contains_query)
+        inventory_page = inventory.filter(product__product_name__icontains=product_contains_query)
 
     context = {
         'inventory':inventory,
         'product':product,
-        'form':form
+        'form':form,
+        'inventory_page':inventory_page,
+        'nums':nums
     }
     return render(request, 'ims/inventory.html', context)
 

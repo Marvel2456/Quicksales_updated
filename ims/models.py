@@ -1,4 +1,5 @@
 from datetime import date
+from email.policy import default
 from enum import unique
 from django.db import models
 from django.contrib.auth.models import User
@@ -58,6 +59,7 @@ class Inventory(models.Model):
     quantity_restocked = models.IntegerField(default=0, blank=True, null=True)
     count = models.IntegerField(default=0, blank=True, null=True)
     store = models.IntegerField(default=0)
+    sold = models.IntegerField(default=0, blank=True, null=True)
     variance = models.IntegerField(default=0)
     last_updated = models.DateField(auto_now=True,)
     date_created = models.DateTimeField(auto_now_add=True,)
@@ -80,11 +82,6 @@ class Inventory(models.Model):
         sold = sum([item.quantity for item in salesitem])
         return sold
 
-    # @property
-    # def quantity_sold_date(self):
-    #     salesitem = self.salesitem_set.all()
-    #     date_sold = [item.last_updated for item in salesitem]
-    #     return date_sold
     
 class Sale(models.Model):
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)

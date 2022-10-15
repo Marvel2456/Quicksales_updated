@@ -67,7 +67,12 @@ def dashboard(request):
         date_added__day = current_day
     ).all()
     total_profits = sum(today_profit.values_list('total_profit', flat=True))
-    sale = Sale.objects.all()
+    
+    # sales = Sale.objects
+
+    sale = Sale.objects.order_by('-total_profit')[:7]
+    item = SalesItem.objects.order_by('-quantity')[:7]
+
 
 
 
@@ -80,7 +85,8 @@ def dashboard(request):
         'transaction':transaction,
         'total_sales':total_sales,
         'total_profits':total_profits,
-        'sale':sale
+        'sale':sale,
+        'item':item
         # 'sale_graph':sale_graph,
     }
     return render(request, 'ims/index.html', context)
@@ -126,6 +132,8 @@ def checkout(request):
         staff = request.user.staff
         sale , created = Sale.objects.get_or_create(staff=staff, completed=False)
         items = sale.salesitem_set.all()
+        
+        
         
     context = {
         'items':items,

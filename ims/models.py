@@ -1,22 +1,11 @@
 from datetime import date
-from email.policy import default
-from enum import unique
 from django.db import models
-from django.contrib.auth.models import User
+from account.models import CustomUser
+from simple_history.models import HistoricalRecords
+
 
 # Create your models here.
 
-
-class Staff(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    address = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=20)
-    email = models.CharField(max_length=200)
-    date_created = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.name
 
 class Category(models.Model):
     category_name = models.CharField(max_length=200, unique=True)
@@ -39,13 +28,12 @@ class Product(models.Model):
     last_updated = models.DateField(auto_now=True,)
     date_created = models.DateTimeField(auto_now_add=True,)
     profit = models.FloatField(blank=True, null=True)
-    # history = HistoricalRecords()
     
     def __str__(self):
         return self.product_name
 
 class Inventory(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products')
     quantity = models.IntegerField(default=0)
     quantity_available = models.IntegerField(default=0)
     reorder_level = models.IntegerField(default=0, blank=True, null=False)
@@ -63,9 +51,11 @@ class Inventory(models.Model):
     variance = models.IntegerField(default=0)
     last_updated = models.DateField(auto_now=True,)
     date_created = models.DateTimeField(auto_now_add=True,)
-
+    history = HistoricalRecords()
+    
     class Meta:
         verbose_name_plural = "inventories"
+        
 
     def __str__(self):
         return self.product.product_name
@@ -82,9 +72,15 @@ class Inventory(models.Model):
         sold = sum([item.quantity for item in salesitem])
         return sold
 
+
+class PaymentMethod(models.Model):
+    method = models.CharField(max_length=250, blank=True, null=True)
+
+    def __str__(self):
+        return self.method
     
 class Sale(models.Model):
-    staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
     choices = (
         ('General', 'General'),
         ('Promo', 'Promo'),
@@ -96,6 +92,7 @@ class Sale(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
     transaction_id = models.CharField(max_length=100, null=True)
+    method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE, blank=True, null=True)
     completed = models.BooleanField(default=False)
 
     def __str__(self):
@@ -119,6 +116,7 @@ class Sale(models.Model):
         profit = sum([item.get_profit for item in salesitem])
         return profit
         # display daily profits on the dashboard and on the sales page
+        #time based welcome greeting with javascript
 
 class SalesItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
@@ -136,6 +134,20 @@ class SalesItem(models.Model):
         return total
 
     @property
+    def get_cost_total(self):
+        total = self.inventory.cost_price * self.quantity
+        return total
+
+    @property
     def get_profit(self):
-        profit = self.inventory.sale_price - self.inventory.cost_price
+        profit = self.get_total - self.get_cost_total
         return profit
+
+
+class Supplier(models.Model):
+    supplier_name = models.CharField(max_length=250, blank=True, null=True)
+    supplier_number = models.CharField(max_length=100, blank=True, null=True)
+    supplies = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.supplier_name

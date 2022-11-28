@@ -1,44 +1,22 @@
-from turtle import title
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from datetime import datetime
+from datetime import datetime, date
 from .models import Category, Product, Sale, SalesItem, Inventory
+from account.models import CustomUser, LoggedIn
 from django.contrib.auth.decorators import login_required
-from .decorators import unauthenticated_user, allowed_users, admin_only
-from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm
+from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm, UserCreateForm, UserForm
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Max
-# from django_pandas.io import read_frame
-# import plotly
-# import plotly.express as px
+from audit import signals
+import csv
 import json
-# import datetime
+from account.decorators import for_admin, for_staff, for_sub_admin
+
 
 # Create your views here
-
-@unauthenticated_user
-def loginUser(request):
-    if request.method =='POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')
-        else:
-            messages.info(request, 'Username or Password is not correct')
-
-    return render(request, 'ims/login.html')
-
-
-        
-def logoutUser(request):
-    logout(request)
-    return redirect('login')
-
 @login_required(login_url=('login'))
 def dashboard(request):
     now = datetime.now()
@@ -68,13 +46,10 @@ def dashboard(request):
     ).all()
     total_profits = sum(today_profit.values_list('total_profit', flat=True))
     
-    # sales = Sale.objects
+    inventory = Inventory.objects.all()
 
     sale = Sale.objects.order_by('-total_profit')[:7]
     item = SalesItem.objects.order_by('-quantity')[:7]
-
-
-
 
 
     context = {
@@ -86,8 +61,8 @@ def dashboard(request):
         'total_sales':total_sales,
         'total_profits':total_profits,
         'sale':sale,
-        'item':item
-        # 'sale_graph':sale_graph,
+        'item':item,
+        'inventory':inventory
     }
     return render(request, 'ims/index.html', context)
 
@@ -114,7 +89,7 @@ def cart(request):
     inventory = Inventory.objects.all()
     
     if request.user.is_authenticated:
-        staff = request.user.staff
+        staff = request.user
         sale , created = Sale.objects.get_or_create(staff=staff, completed=False)
         items = sale.salesitem_set.all()
         
@@ -129,7 +104,7 @@ def checkout(request):
     inventory = Inventory.objects.all()
     
     if request.user.is_authenticated:
-        staff = request.user.staff
+        staff = request.user
         sale , created = Sale.objects.get_or_create(staff=staff, completed=False)
         items = sale.salesitem_set.all()
         
@@ -149,7 +124,7 @@ def updateCart(request):
     print('inventory:', inventoryId)
     print('Action:', action)
 
-    staff = request.user.staff
+    staff = request.user
     inventory = Inventory.objects.get(id=inventoryId)
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
@@ -172,7 +147,7 @@ def updateQuantity(request):
     input_value = int(data['val'])
     inventory_Id = data['invent_id']
     
-    staff = request.user.staff
+    staff = request.user
     inventory = Inventory.objects.get(id=inventory_Id)
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
@@ -193,7 +168,7 @@ def updateQuantity(request):
 def sale_complete(request):
     transaction_id = datetime.now().timestamp()
     data = json.loads(request.body)
-    staff = request.user.staff
+    staff = request.user
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     sale.transaction_id = transaction_id
     total = float(data['payment']['total_cart'])
@@ -205,7 +180,7 @@ def sale_complete(request):
     sale.save()   
 
     return JsonResponse('Payment completed', safe=False)
-
+    
 def sales(request):
     sale = Sale.objects.all()
     paginator = Paginator(Sale.objects.all(), 10)
@@ -243,10 +218,20 @@ def sale_delete(request):
             sale.delete()
             messages.success(request, "Succesfully deleted")
             return redirect('sales')
-    
 
-def report(request):
-    return render(request, 'ims/records.html')
+def export_sales_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition']='attachment; filename = Sales History'+str(datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Sales Rep', 'Trans Id', 'Date', 'Quantity', 'Total'])
+    
+    sale = Sale.objects.all()
+    
+    for sale in sale:
+        writer.writerow([sale.staff, sale.transaction_id, sale.date_updated, sale.get_cart_items, sale.final_total_price])
+    
+    return response
+    
 
 def reciept(request, pk):
     sale = Sale.objects.get(id = pk)
@@ -257,6 +242,8 @@ def reciept(request, pk):
         'sale':sale
     }
     return render(request, 'ims/reciept.html', context)
+
+
 
 def product_category(request):
     products = Product.objects.all().order_by('-date_created')
@@ -286,6 +273,7 @@ def product_category(request):
     }
     return render(request, 'ims/products.html', context)
 
+
 def product(request, pk):
     products = Product.objects.get(id=pk)
 
@@ -293,6 +281,8 @@ def product(request, pk):
         'products':products
     } 
     return render(request, 'ims/modal_edit_product.html', context)
+
+
 
 def edit_product(request):
     if request.method == 'POST':
@@ -304,6 +294,8 @@ def edit_product(request):
                 messages.success(request, 'successfully updated')
                 return redirect('products')
 
+
+
 def delete_product(request):
     if request.method == 'POST':
         product = Product.objects.get(id = request.POST.get('id'))
@@ -311,6 +303,8 @@ def delete_product(request):
             product.delete()
             messages.success(request, "Succesfully deleted")
             return redirect('products')
+
+
 
 def category_list(request):
     category = Category.objects.all()
@@ -338,6 +332,8 @@ def category_list(request):
     }
     return render(request, 'ims/category.html', context)
 
+
+
 def category(request, pk):
     category = Category.objects.get(id=pk)
 
@@ -345,6 +341,8 @@ def category(request, pk):
         'category':category
     }
     return render(request, 'ims/edit_category', context)
+
+
 
 def edit_category(request):
     if request.method == 'POST':
@@ -356,6 +354,7 @@ def edit_category(request):
                 messages.success(request, 'successfully updated')
                 return redirect('category_list')
 
+
 def delete_category(request):
     if request.method == 'POST':
         category = Category.objects.get(id = request.POST.get('id'))
@@ -363,6 +362,8 @@ def delete_category(request):
             category.delete()
             messages.success(request, "Succesfully deleted")
             return redirect('category_list')
+
+
 
 def inventory_list(request):
     inventory = Inventory.objects.all()
@@ -388,9 +389,11 @@ def inventory_list(request):
         'product':product,
         'form':form,
         'inventory_page':inventory_page,
-        'nums':nums
+        'nums':nums,
     }
     return render(request, 'ims/inventory.html', context)
+
+
 
 def inventory(request, pk):
     inventory = Inventory.objects.get(id=pk)
@@ -399,6 +402,7 @@ def inventory(request, pk):
         'inventory':inventory
     }
     return render(request, 'ims/edit_inventory.html', context)
+
 
 def edit_inventory(request):
     if request.method == 'POST':
@@ -409,6 +413,8 @@ def edit_inventory(request):
                 form.save()
                 messages.success(request, 'successfully updated')
                 return redirect('inventorys')
+
+
 
 def restock(request):
     if request.method == 'POST':
@@ -422,6 +428,7 @@ def restock(request):
                 messages.success(request, 'successfully updated')
                 return redirect('inventorys')
 
+
 def delete_inventory(request):
     if request.method == 'POST':
         inventory = Inventory.objects.get(id = request.POST.get('id'))
@@ -430,5 +437,60 @@ def delete_inventory(request):
             messages.success(request, "Succesfully deleted")
             return redirect('inventorys')
 
-def staffs(request):
-    return render(request, 'ims/staff.html')
+
+@login_required
+def staffs(request): 
+    staff = CustomUser.objects.all()
+    form = UserCreateForm()
+    if request.method == 'POST':
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, 'Account successfully created for ' + username)
+
+   
+    context = {
+        'staff':staff,
+        'form':form
+    }
+    return render(request, 'ims/staff.html', context)
+
+
+@login_required
+def staff(request, pk):
+    staff = CustomUser.objects.get(id=pk)
+
+    context = {
+        'staff':staff,
+    }
+    return render(request, 'ims/staff.html', context)
+
+def edit_staff(request):
+    if request.method == 'POST':
+        staff = CustomUser.objects.get(id=request.POST.get('id'))
+        if staff != None:
+            form = UserForm(request.POST, instance=staff)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'successfully updated')
+                return redirect('staff')
+
+
+def delete_staff(request):
+    if request.method == 'POST':
+        staff = CustomUser.objects.get(id = request.POST.get('id')) 
+        if staff != None:
+            staff.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('staff')
+
+
+
+def record(request):
+    login_trail = LoggedIn.objects.all()
+
+    context = {
+        'login_trail':login_trail,
+    }
+    return render(request, 'ims/records.html', context)

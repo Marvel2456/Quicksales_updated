@@ -1,8 +1,20 @@
 from django.forms import ModelForm, ValidationError
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from account.models import CustomUser
 from . models import *
+
+class UserCreateForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = (
+            'username', 'password1', 'password2', 'is_admin', 'is_sub_admin', 'is_work_staff'
+            )
+
+class UserForm(ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'phone_number', 'address')
 
 class ProductForm(ModelForm):
     class Meta:
@@ -77,3 +89,5 @@ class EditInventoryForm(ModelForm):
     class Meta:
         model = Inventory
         fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')
+
+

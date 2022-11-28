@@ -61,7 +61,7 @@
                                     {% for inventory in inventory_page %}
                                     <tr>
                                         <td class="cell"><span class="truncate">{{inventory.product.product_name}}</span></td>
-                                        <td class="cell">{{inventory.quantity_sold_date|date:"D, d M, Y"}}</td>
+                                        <td class="cell">{{inventory.product.category}}</td>
                                         <td class="cell"><span></span><span class="note">{{inventory.store_quantity}}</span></td>
                                         <td class="cell"><span class="note">{{inventory.last_updated}}</span></td>
                                         <td class="cell"><span class="badge bg-success"><a class="btn-sm app-btn-success" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#addRestockModal{{inventory.pk}}">restock</a></span></td>

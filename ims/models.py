@@ -153,9 +153,16 @@ class Supplier(models.Model):
         return self.supplier_name
 
 class ErrorTicket(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete= models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
     title = models.CharField(max_length=150, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    choices = (
+        ('Pending', 'Pending'),
+        ('Seen', 'Seen'),
+    )
+    status = models.CharField(max_length=50, choices=choices,default="Pending", blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
         return self.title

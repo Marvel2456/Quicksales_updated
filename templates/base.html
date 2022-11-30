@@ -33,7 +33,9 @@
         
     </header>
     <div class="app-wrapper">
+        {% include 'ims/message.html' %}
         {% block content %}
+        
     
 
         {% endblock content %}
@@ -52,11 +54,20 @@
     <!-- Javascript -->          
     <script src="{% static 'assets/plugins/popper.min.js' %}"></script>
     <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/jQuery 3.6.1.min.js' %}"></script>
     
 
     <!-- Charts JS -->
     <script src="{% static 'assets/plugins/chart.js/chart.min.js' %}"></script> 
     <script src="{% static 'assets/js/index-charts.js' %}"></script> 
+    <script src="{% static 'assets/js/zingchart/zingchart.min.js' %}"></script>
+    <script>
+        setTimeout(function(){
+            if ($('#msg').length > 0 ){
+                $('#msg').remove();
+            }
+        }, 4000)
+    </script>
     <script>
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, {
@@ -99,6 +110,80 @@
 </div>
 </div>
 </script>
+
+    <!--Zing Chart-->
+    <script>
+        let saleID =   "{{sale.id}}"
+
+
+        let dataURL= `/profitData/${saleID}/`
+
+        $.ajax({
+            method:'GET',
+            url:dataURL,
+            success:function(response){
+                console.log('RESPONSE:', response)
+            }
+        })
+
+
+        let chartData = {
+            type:'bar',
+            title: {
+                text: 'Data Basics',
+                fontSize: 24,
+              },
+              legend: {
+                draggable: true,
+              },
+              scaleX: {
+                // Set scale label
+                label: { text: 'Days' },
+                // Convert text on scale indices
+                labels: [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ]
+              },
+              scaleY: {
+                // Scale label with unicode character
+                label: { text: 'Temperature (°F)' }
+              },
+              plot: {
+                // Animation docs here:
+                // https://www.zingchart.com/docs/tutorials/styling/animation#effect
+                animation: {
+                  effect: 'ANIMATION_EXPAND_BOTTOM',
+                  method: 'ANIMATION_STRONG_EASE_OUT',
+                  sequence: 'ANIMATION_BY_NODE',
+                  speed: 275,
+                }
+              },
+              series: [
+                {
+                  // plot 1 values, linear data
+                  values: [23,20,27,29,25,17,15],
+                  text: 'Week 1',
+                },
+                {
+                  // plot 2 values, linear data
+                  values: [35,42,33,49,35,47,35],
+                  text: 'Week 2'
+                },
+                {
+                  // plot 2 values, linear data
+                  values: [15,22,13,33,44,27,31],
+                  text: 'Week 3'
+                }
+              ]
+        }
+
+
+        zingchart.render({
+            id:'zChart',
+            data:chartData,
+        });
+
+
+    </script>
+    <!--Zing Chart End-->
     
     <!-- Page Specific JS -->
     <script src="{% static 'assets/js/app.js' %}"></script>

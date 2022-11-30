@@ -90,4 +90,18 @@ class EditInventoryForm(ModelForm):
         model = Inventory
         fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')
 
+class CreateTicketForm(ModelForm):
+    class Meta:
+        model = ErrorTicket
+        fields = ('title', 'description')
+
+class UpdateTicketForm(ModelForm):
+    class Meta:
+        model = ErrorTicket
+        fields = ('status',)
+
+        widgets = {
+            'status': forms.Select(attrs={'class':'form-select', 'placeholder':'status', 'required':True})
+        }
+
 

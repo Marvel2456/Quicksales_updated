@@ -9,7 +9,7 @@
         
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-                <h1 class="app-page-title mb-0">Inventory</h1>
+                <h1 class="app-page-title mb-0">Ticket</h1>
             </div>
             <div class="col-auto">
                  <div class="page-utilities">
@@ -43,36 +43,30 @@
                             <table class="table app-table-hover mb-0 text-left" id="example">
                                 <thead>
                                     <tr>
-                                        <th class="cell">Product</th>
-                                        <th class="cell">Category</th>
-                                        <th class="cell">Quantity</th>
-                                        <th class="cell">Last Updated</th>
-                                        <th class="cell"></th>
+                                        <th class="cell">Sent By</th>
+                                        <th class="cell">Title</th>
+                                        <th class="cell">Status</th>
+                                        <th class="cell">Date</th>
+                                        <th class="cell">Viewed On</th>
                                         <th class="cell"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <div class="m-2 py-2">
-                                        <a class="btn app-btn-secondary " data-bs-toggle="modal" data-bs-target="#addInventoryModal">
-                                            <i class="fas fa-plus"></i>
-                                            Add Inventory
-                                        </a>
+                                        
                                     </div>    
-                                    {% for inventory in inventory_page %}
+                                    {% for ticket in ticket %}
                                     <tr>
-                                        <td class="cell"><span class="truncate">{{inventory.product.product_name}}</span></td>
-                                        <td class="cell">{{inventory.product.category}}</td>
-                                        <td class="cell"><span></span><span class="note">{{inventory.store_quantity}}</span></td>
-                                        <td class="cell"><span class="note">{{inventory.last_updated}}</span></td>
-                                        <td class="cell"><span class="badge bg-success"><a class="btn-sm app-btn-success" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#addRestockModal{{inventory.pk}}">restock</a></span></td>
+                                        <td class="cell"><span class="truncate">{{ticket.staff}}</span></td>
+                                        <td class="cell">{{ticket.title}}</td>
+                                        <td class="cell"><span></span><span class="note">{{ticket.status}}</span></td>
+                                        <td class="cell"><span class="note">{{ticket.date_added}}</span></td>
+                                        <td class="cell"><span class="note">{{ticket.date_updated}}</span></td>
                                         <td class="cell">
-                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#editInventoryModal{{inventory.pk}}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
-                                            <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#deleteInventoryModal{{inventory.pk}}"><i class="fa-solid fa-trash-can"></i></a>
+                                            <a class="btn-sm app-btn-secondary" style="cursor:pointer;" href="{% url 'tickets' ticket.id %}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
+                                            {% comment %} <a class="btn-sm app-btn-secondary" data-bs-toggle="modal" style="cursor:pointer;" data-bs-target="#deleteInventoryModal{{inventory.pk}}"><i class="fa-solid fa-trash-can"></i></a> {% endcomment %}
                                         </td>
                                     </tr>
-                                    {% include 'ims/delete_inventory.html' %}
-                                    {% include 'ims/edit_inventory.html' %}
-                                    {% include 'ims/restock.html' %}
                                     {% endfor %}
                                     
                                 </tbody>
@@ -81,7 +75,7 @@
                        
                     </div><!--app-card-body-->		
                 </div><!--app-card-->
-                <div class="pagination">
+                {% comment %} <div class="pagination">
                     <span class="step-links">
                       <nav aria-label="Page navigation example">
                         <ul class="pagination" style="color:yellow;">
@@ -99,7 +93,7 @@
                         </ul>
                       </nav>
                     </span>
-                </div>
+                </div> {% endcomment %}
                 
             </div><!--tab-pane-->
             

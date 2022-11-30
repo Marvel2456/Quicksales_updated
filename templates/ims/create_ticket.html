@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Create Ticket {% endblock title %}
+
+{% block content %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Title</label>
+                <input name="title" type="text" class="form-control" id="title" placeholder="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" id="description" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-plus"></i>&nbsp;&nbsp; Add Ticket
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

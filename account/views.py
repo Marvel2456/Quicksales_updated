@@ -18,7 +18,7 @@ def loginUser(request):
             login_id = datetime.now().timestamp(),
             timestamp = datetime.now()
             ).save()
-            
+            messages.success(request, f'Welcome {user.username}')
             return redirect('index')
         else:
             messages.info(request, 'Username or Password is not correct')

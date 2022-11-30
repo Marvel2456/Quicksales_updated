@@ -3,10 +3,10 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, date
-from .models import Category, Product, Sale, SalesItem, Inventory
+from .models import Category, Product, Sale, SalesItem, Inventory, ErrorTicket, PaymentMethod
 from account.models import CustomUser, LoggedIn
 from django.contrib.auth.decorators import login_required
-from . forms import EditInventoryForm, ProductForm, EditProductForm, CategoryForm, EditCategoryForm, CreateInventoryForm, RestockForm, UserCreateForm, UserForm
+from . forms import *
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Max
@@ -18,7 +18,6 @@ from account.decorators import for_admin, for_staff, for_sub_admin
 
 # Create your views here
 @login_required(login_url=('login'))
-@for_admin
 def dashboard(request):
     now = datetime.now()
     current_year = now.strftime("%Y")
@@ -180,15 +179,16 @@ def sale_complete(request):
 
     if total == sale.get_cart_total:
         sale.completed = True   
-    sale.save()   
+    sale.save()
+    messages.success(request, 'sale completed')
 
     return JsonResponse('Payment completed', safe=False)
 
 @login_required
 @for_admin    
 def sales(request):
-    sale = Sale.objects.all()
-    paginator = Paginator(Sale.objects.all(), 10)
+    sale = Sale.objects.all().order_by('-date_updated')
+    paginator = Paginator(Sale.objects.all().order_by('-date_updated'), 10)
     page = request.GET.get('page')
     sale_page = paginator.get_page(page)
     nums = "a" *sale_page.paginator.num_pages
@@ -249,6 +249,19 @@ def reciept(request, pk):
         'sale':sale
     }
     return render(request, 'ims/reciept.html', context)
+
+
+def profitData(request, pk):
+    profits = []
+
+    sale = Sale.objects.get(id = pk)
+    items = sale.salesitem_set.all()
+
+    for i in items:
+        profits.append({i.get_profit:i.inventory.product.product_name})
+
+    return JsonResponse(profits, safe=False)
+
 
 
 @for_sub_admin
@@ -413,6 +426,7 @@ def inventory(request, pk):
     }
     return render(request, 'ims/edit_inventory.html', context)
 
+
 @for_admin
 def edit_inventory(request):
     if request.method == 'POST':
@@ -446,6 +460,32 @@ def delete_inventory(request):
             inventory.delete()
             messages.success(request, "Succesfully deleted")
             return redirect('inventorys')
+
+@for_admin
+def inventoryAudit(request):
+    inventory = Inventory.objects.all()
+    audit = Inventory.history.all()
+
+    context = {
+        'inventory':inventory,
+        'audit':audit
+    }
+    return render(request, 'ims/price_audit.html', context)
+
+
+@for_admin
+def export_audit_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition']='attachment; filename = Audit History'+str(datetime.now())+'.csv'
+    writer = csv.writer(response)
+    writer.writerow(['Staff', 'Product', 'Date Restocked', 'Quantity Restocked', 'New Cost Price', 'New Sale Price'])
+    
+    audit = Inventory.history.all()
+    
+    for audit in audit:
+        writer.writerow([audit.history_user, audit.product.product_name, audit.history_date, audit.quantity_restocked, audit.cost_price, audit.sale_price])
+    
+    return response
 
 
 @login_required
@@ -504,9 +544,52 @@ def delete_staff(request):
 
 @for_admin
 def record(request):
-    login_trail = LoggedIn.objects.all()
+    login_trail = LoggedIn.objects.all().order_by('-timestamp')
 
     context = {
         'login_trail':login_trail,
     }
     return render(request, 'ims/records.html', context)
+
+
+def errorTicket(request):
+    ticket = ErrorTicket.objects.all()
+
+    context = {
+        'ticket':ticket
+    }
+
+    return render(request, 'ims/ticket.html', context)
+
+def Ticket(request, pk):
+    ticket = ErrorTicket.objects.get(id=pk)
+    form = UpdateTicketForm(instance=ticket)
+    if request.method == 'POST':
+        form = UpdateTicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ticket viewed')
+            return redirect('ticket')
+
+    context = {
+        'ticket':ticket
+    }
+    return render(request, 'ims/ticket.html', context)
+
+def createTicket(request):
+    form = CreateTicketForm()
+    if request.method == 'POST':
+        staff = request.user
+        form = CreateTicketForm(request.POST)
+        ticket, created = ErrorTicket.objects.get_or_create(staff=staff)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ticket Created Successfully')
+            return redirect('index')
+
+    context = {
+        'ticket':ticket
+    }
+    
+
+    return render(request, 'ims/create_ticket.html', context)

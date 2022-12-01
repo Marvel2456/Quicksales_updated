@@ -94,6 +94,7 @@ class CreateTicketForm(ModelForm):
     class Meta:
         model = ErrorTicket
         fields = ('title', 'description')
+        exclude = ['staff']
 
 class UpdateTicketForm(ModelForm):
     class Meta:
@@ -103,5 +104,10 @@ class UpdateTicketForm(ModelForm):
         widgets = {
             'status': forms.Select(attrs={'class':'form-select', 'placeholder':'status', 'required':True})
         }
+
+class PaymentForm(ModelForm):
+    class Meta:
+        model = Sale
+        fields = ('method',)
 
 

@@ -38,4 +38,5 @@ urlpatterns = [
     path('ticket/', views.errorTicket, name='ticket'),
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('tickets/<str:pk>', views.Ticket, name='tickets'),
+    # path('pay/<str:pk>/', views.payMethod, name='pay'),
 ]

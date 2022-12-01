@@ -81,18 +81,18 @@ class PaymentMethod(models.Model):
     
 class Sale(models.Model):
     staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
-    choices = (
-        ('General', 'General'),
-        ('Promo', 'Promo'),
-    )
-    mode_of_sales = models.CharField(max_length=50, choices=choices,default="General", blank=True, null=True)
     total_profit = models.FloatField(default=0, blank=True, null=True)
     final_total_price = models.FloatField(default=0, blank=True, null=True)
     discount =  models.FloatField(default=0, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
     transaction_id = models.CharField(max_length=100, null=True)
-    method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE, blank=True, null=True)
+    choices = (
+        ('Cash', 'Cash'),
+        ('Transfer', 'Transfer'),
+        ('POS', 'POS'),
+    )
+    method = models.CharField(max_length=50, choices=choices,default="Cash", blank=True, null=True)
     completed = models.BooleanField(default=False)
 
     def __str__(self):
@@ -165,4 +165,4 @@ class ErrorTicket(models.Model):
     date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return str(self.title)

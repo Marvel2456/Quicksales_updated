@@ -6,22 +6,28 @@
 {% block content %}
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xl">
+        
+        <div class="card">
+            <div class="card-header">
+              Title : {{ticket.title}}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Description</h5>
+              <p class="card-text">{{ticket.description}}.</p>
+            </div>
+        </div>
+        <br>
         <form method="post">
             {% csrf_token %}
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Title</label>
-                <input name="title" type="text" class="form-control" id="title" value="{{ticket.title}}" required readonly>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="description" class="form-control" id="description" rows="5" value="{{ticket.description}}" required readonly></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Status</label>
-                {{form.status}}
+            <div class="mb-3 col-md-4">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="form-select">
+                    <option>Pending</option>
+                    <option>Seen</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-secondary">
-                <i class="fas fa-plus"></i>&nbsp;&nbsp; Update
+                Update
             </button>
         </form>
     </div>

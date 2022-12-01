@@ -109,6 +109,13 @@ def checkout(request):
         staff = request.user
         sale , created = Sale.objects.get_or_create(staff=staff, completed=False)
         items = sale.salesitem_set.all()
+        form = PaymentForm()
+        if request.method == 'POST':
+            form = PaymentForm(request.POST or None, instance=sale)
+            if form.is_valid():
+                sale = form.save(commit=False)
+                sale.save()
+                messages.success(request, 'Payment Method Updated')
         
         
         
@@ -177,8 +184,9 @@ def sale_complete(request):
     sale.final_total_price = sale.get_cart_total
     sale.total_profit = sale.get_total_profit
 
+
     if total == sale.get_cart_total:
-        sale.completed = True   
+        sale.completed = True 
     sale.save()
     messages.success(request, 'sale completed')
 
@@ -574,22 +582,22 @@ def Ticket(request, pk):
     context = {
         'ticket':ticket
     }
-    return render(request, 'ims/ticket.html', context)
+    return render(request, 'ims/view_ticket.html', context)
 
 def createTicket(request):
+    staff = CustomUser.objects.all()
     form = CreateTicketForm()
     if request.method == 'POST':
-        staff = request.user
-        form = CreateTicketForm(request.POST)
-        ticket, created = ErrorTicket.objects.get_or_create(staff=staff)
+        form = CreateTicketForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            ticket = form.save(commit=False)
+            ticket.staff = request.user
+            ticket.save()
             messages.success(request, 'Ticket Created Successfully')
             return redirect('index')
 
     context = {
-        'ticket':ticket
+        'staff':staff
     }
     
-
     return render(request, 'ims/create_ticket.html', context)

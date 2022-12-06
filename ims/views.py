@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, date
-from .models import Category, Product, Sale, SalesItem, Inventory, ErrorTicket, PaymentMethod
+from .models import Category, Product, Sale, SalesItem, Inventory, ErrorTicket
 from account.models import CustomUser, LoggedIn
 from django.contrib.auth.decorators import login_required
 from . forms import *
@@ -500,6 +500,7 @@ def export_audit_csv(request):
 @for_admin
 def staffs(request): 
     staff = CustomUser.objects.all()
+    staff_contains = request.GET.get('username')
     form = UserCreateForm()
     if request.method == 'POST':
         form = UserCreateForm(request.POST)

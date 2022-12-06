@@ -88,7 +88,7 @@ class RestockForm(ModelForm):
 class EditInventoryForm(ModelForm):
     class Meta:
         model = Inventory
-        fields = ('product', 'quantity', 'cost_price', 'sale_price', 'reorder_level')
+        fields = ('reorder_level',)
 
 class CreateTicketForm(ModelForm):
     class Meta:

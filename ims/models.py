@@ -71,13 +71,6 @@ class Inventory(models.Model):
         salesitem = self.salesitem_set.all()
         sold = sum([item.quantity for item in salesitem])
         return sold
-
-
-class PaymentMethod(models.Model):
-    method = models.CharField(max_length=250, blank=True, null=True)
-
-    def __str__(self):
-        return self.method
     
 class Sale(models.Model):
     staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)

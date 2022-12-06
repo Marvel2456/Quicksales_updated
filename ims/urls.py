@@ -22,7 +22,7 @@ urlpatterns = [
     path('products/', views.product_category, name='products'),
     path('product/<str:pk>/', views.product, name='product'),
     path('edit_product/', views.edit_product, name='edit_product'),
-    path('edit_inventory/', views.edit_inventory, name='edit_inventory'),
+    path('set_reorder/', views.edit_inventory, name='set_reorder'),
     path('inventorys/', views.inventory_list, name='inventorys'),
     path('inventory/<str:pk>/', views.inventory, name='inventory'),
     path('delete_inventory/', views.delete_inventory, name='delete_inventory'),
@@ -38,5 +38,4 @@ urlpatterns = [
     path('ticket/', views.errorTicket, name='ticket'),
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('tickets/<str:pk>', views.Ticket, name='tickets'),
-    # path('pay/<str:pk>/', views.payMethod, name='pay'),
 ]

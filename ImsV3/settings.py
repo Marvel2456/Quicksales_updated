@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ims.apps.ImsConfig',
     'account.apps.AccountConfig',
-    'audit.apps.AuditConfig',
+    'events.apps.EventsConfig',
     'simple_history',
 ]
 

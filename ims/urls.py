@@ -38,4 +38,6 @@ urlpatterns = [
     path('ticket/', views.errorTicket, name='ticket'),
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('tickets/<str:pk>', views.Ticket, name='tickets'),
+    # path('<int:year>/<str:month>/', views.report, name='reports'),
+    path('reports/', views.report, name='reports'),
 ]

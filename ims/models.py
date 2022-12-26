@@ -111,6 +111,7 @@ class Sale(models.Model):
         # display daily profits on the dashboard and on the sales page
         #time based welcome greeting with javascript
 
+
 class SalesItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
@@ -159,3 +160,7 @@ class ErrorTicket(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+
+class Calender(models.Model):
+    pass

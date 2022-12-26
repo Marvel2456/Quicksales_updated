@@ -14,6 +14,8 @@ from audit import signals
 import csv
 import json
 from account.decorators import for_admin, for_staff, for_sub_admin
+import calendar
+from calendar import HTMLCalendar
 
 
 # Create your views here
@@ -45,7 +47,7 @@ def dashboard(request):
         date_added__day = current_day
     ).all()
     total_profits = sum(today_profit.values_list('total_profit', flat=True))
-    
+    pending = ErrorTicket.objects.filter(status='Pending')
     inventory = Inventory.objects.all()
 
     sale = Sale.objects.order_by('-total_profit')[:7]
@@ -53,6 +55,7 @@ def dashboard(request):
 
 
     context = {
+        'pending':pending,
         'products':products,
         'category':category,
         'total_product':total_product,
@@ -65,6 +68,30 @@ def dashboard(request):
         'inventory':inventory
     }
     return render(request, 'ims/index.html', context)
+
+@login_required
+@for_admin
+def report(request):
+    now = datetime.now()
+    current_year = now.strftime("%Y")
+    current_month = now.strftime("%m")
+    current_day = now.strftime("%d")
+    
+    monthly_profit = Sale.objects.filter(
+        date_added__year = current_year,
+        date_added__month = current_month
+    )
+    total_profits = sum(monthly_profit.values_list('total_profit', flat=True))
+    yearly_prof = Sale.objects.filter(
+        date_added__year = current_year,
+    )
+    year_prof = sum(yearly_prof.values_list('total_profit', flat=True))
+
+    context = {
+        'year_prof':year_prof,
+        'total_profits':total_profits,
+    }
+    return render(request, 'ims/reports.html', context)
 
 @login_required
 @for_staff
@@ -116,8 +143,6 @@ def checkout(request):
                 sale = form.save(commit=False)
                 sale.save()
                 messages.success(request, 'Payment Method Updated')
-        
-        
         
     context = {
         'items':items,
@@ -563,9 +588,11 @@ def record(request):
 
 def errorTicket(request):
     ticket = ErrorTicket.objects.all()
+    pending = ErrorTicket.objects.filter(status='Pending')
 
     context = {
-        'ticket':ticket
+        'ticket':ticket,
+        'pending':pending
     }
 
     return render(request, 'ims/ticket.html', context)

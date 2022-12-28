@@ -87,6 +87,7 @@ class Sale(models.Model):
     )
     method = models.CharField(max_length=50, choices=choices,default="Cash", blank=True, null=True)
     completed = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
     def __str__(self):
         return str(self.transaction_id)
@@ -162,5 +163,10 @@ class ErrorTicket(models.Model):
         return str(self.title)
 
 
-class Calender(models.Model):
-    pass
+# class Event(models.Model):
+#     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
+#     event_date = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return str(self.event_date)
+

@@ -10,7 +10,6 @@ from . forms import *
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Max
-from audit import signals
 import csv
 import json
 from account.decorators import for_admin, for_staff, for_sub_admin
@@ -19,6 +18,19 @@ from calendar import HTMLCalendar
 
 
 # Create your views here
+def eventsManager(request, year, month):
+    month = month.capitalize()
+
+    month_number = list(calendar.month_name).index(month)
+    month_number = int(month_number)
+    cal = HTMLCalendar().formatmonth(year, month_number)
+    context = {
+        'year':year,
+        'month':month,
+        'cal':cal
+    }
+    return render(request, 'ims/reports.html', context)
+
 @login_required(login_url=('login'))
 def dashboard(request):
     now = datetime.now()

@@ -9,13 +9,19 @@ class InventoryHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["status"]
     search_fields = ['product', 'user__username']
 
+class SaleHistoryAdmin(SimpleHistoryAdmin):
+    list_display = ["id", "staff", "date_added"]
+    history_list_display = ["date_added"]
+    search_fields = ['staff__username', 'date_added']
+
 
 
 
 admin.site.register(Product)
-admin.site.register(Sale)
+admin.site.register(Sale, SaleHistoryAdmin)
 admin.site.register(SalesItem)
 admin.site.register(Category)
 admin.site.register(Inventory, InventoryHistoryAdmin)
 admin.site.register(Supplier)
 admin.site.register(ErrorTicket)
+# admin.site.register(Event)

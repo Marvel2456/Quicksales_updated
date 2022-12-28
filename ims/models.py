@@ -117,6 +117,7 @@ class SalesItem(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
     total = models.FloatField(default=0)
+    cost_total = models.FloatField(default=0)
     quantity = models.IntegerField(default=0, blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
     

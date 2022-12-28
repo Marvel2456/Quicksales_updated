@@ -198,6 +198,8 @@ def updateQuantity(request):
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
     saleItem.quantity = input_value
+    saleItem.get_total = saleItem.total
+    saleItem.get_cost_total = saleItem.cost_total
     saleItem.save()
 
     if saleItem.quantity <= 0:

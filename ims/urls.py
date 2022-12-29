@@ -38,7 +38,7 @@ urlpatterns = [
     path('ticket/', views.errorTicket, name='ticket'),
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('tickets/<str:pk>', views.Ticket, name='tickets'),
-    # path('<int:year>/<str:month>/', views.report, name='reports'),
+    path('pos/', views.addPos, name='pos'),
     path('reports/', views.report, name='reports'),
     path('<int:year>/<str:month>/', views.eventsManager, name='report'),
 ]

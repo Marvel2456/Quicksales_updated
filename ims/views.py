@@ -548,6 +548,8 @@ def staffs(request):
             username = form.cleaned_data.get('username')
             messages.success(request, 'Account successfully created for ' + username)
 
+    if staff_contains != '' and staff_contains is not None:
+        staff = staff.filter(username__icontains=staff_contains)
    
     context = {
         'staff':staff,
@@ -643,3 +645,6 @@ def createTicket(request):
     }
     
     return render(request, 'ims/create_ticket.html', context)
+
+def addPos(request):
+    return render(request, 'ims/pos.html')

@@ -17,3 +17,14 @@ class LoggedIn(models.Model):
 
     def __str__(self):
         return str(self.staff)
+
+class Pos(models.Model):
+    name = models.CharField(max_length=250, blank=True, null=True)
+    description = models.CharField(max_length=300, blank=True, null=True)
+    staff = models.ManyToManyField(CustomUser, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'pos'
+
+    def __str__(self):
+        return str(self.name)

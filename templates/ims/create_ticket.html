@@ -9,8 +9,12 @@
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Title</label>
+                <label for="title" class="form-label">Title</label>
                 <input name="title" type="text" class="form-control" id="title" placeholder="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="pos_area" class="form-label">POS</label>
+                <input name="pos_area" type="text" class="form-control" id="pos_area" placeholder="POS" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>

@@ -1,6 +1,6 @@
 from datetime import date
 from django.db import models
-from account.models import CustomUser
+from account.models import CustomUser, Pos
 from simple_history.models import HistoricalRecords
 
 
@@ -71,9 +71,10 @@ class Inventory(models.Model):
         salesitem = self.salesitem_set.all()
         sold = sum([item.quantity for item in salesitem])
         return sold
-    
+
+
 class Sale(models.Model):
-    staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(Pos, on_delete=models.SET_NULL, blank=True, null=True)
     total_profit = models.FloatField(default=0, blank=True, null=True)
     final_total_price = models.FloatField(default=0, blank=True, null=True)
     discount =  models.FloatField(default=0, blank=True, null=True)
@@ -120,6 +121,7 @@ class SalesItem(models.Model):
     cost_total = models.FloatField(default=0)
     quantity = models.IntegerField(default=0, blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+    history = HistoricalRecords()
     
     def __str__(self):
         return str(self.inventory)
@@ -150,6 +152,7 @@ class Supplier(models.Model):
 
 class ErrorTicket(models.Model):
     staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
+    pos_area = models.CharField(max_length=250, blank=True, null=True)
     title = models.CharField(max_length=150, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     choices = (
@@ -162,12 +165,4 @@ class ErrorTicket(models.Model):
 
     def __str__(self):
         return str(self.title)
-
-
-# class Event(models.Model):
-#     sale = models.ForeignKey(Sale, on_delete=models.SET_NULL, blank=True, null=True)
-#     event_date = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return str(self.event_date)
 

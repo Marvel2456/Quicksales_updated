@@ -93,7 +93,7 @@ class EditInventoryForm(ModelForm):
 class CreateTicketForm(ModelForm):
     class Meta:
         model = ErrorTicket
-        fields = ('title', 'description')
+        fields = ('title',  'pos_area', 'description')
         exclude = ['staff']
 
 class UpdateTicketForm(ModelForm):

@@ -21,7 +21,9 @@ class LoggedIn(models.Model):
 class Pos(models.Model):
     name = models.CharField(max_length=250, blank=True, null=True)
     description = models.CharField(max_length=300, blank=True, null=True)
-    staff = models.ManyToManyField(CustomUser, blank=True, null=True)
+    staff = models.ManyToManyField(CustomUser)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = 'pos'

@@ -74,7 +74,7 @@ class Inventory(models.Model):
 
 
 class Sale(models.Model):
-    staff = models.ForeignKey(Pos, on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, blank=True, null=True)
     total_profit = models.FloatField(default=0, blank=True, null=True)
     final_total_price = models.FloatField(default=0, blank=True, null=True)
     discount =  models.FloatField(default=0, blank=True, null=True)
@@ -87,6 +87,7 @@ class Sale(models.Model):
         ('POS', 'POS'),
     )
     method = models.CharField(max_length=50, choices=choices,default="Cash", blank=True, null=True)
+    Shop = models.ForeignKey(Pos, on_delete=models.SET_NULL, blank=True, null=True)
     completed = models.BooleanField(default=False)
     history = HistoricalRecords()
 

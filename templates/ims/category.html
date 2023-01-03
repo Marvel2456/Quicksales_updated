@@ -102,14 +102,4 @@
     </div><!--//container-fluid-->
 </div><!--//app-content-->
 
-{% for message in messages %}
-    {% if message.tags == 'success' %}
-    <script src="{% static 'assets/js/sweetalert2.all.min.js' %}"></script>
-    <script>
-        var m = "{{ message }}";
-        swal.fire("perfect !", m, "success")
-    </script>
-    {% endif %}
-{% endfor %}
-
 {% endblock content %}

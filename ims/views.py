@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, date
 from .models import Category, Product, Sale, SalesItem, Inventory, ErrorTicket
-from account.models import CustomUser, LoggedIn
+from account.models import CustomUser, LoggedIn, Pos
 from django.contrib.auth.decorators import login_required
 from . forms import *
 from django.core.paginator import Paginator
@@ -128,6 +128,7 @@ def store(request):
 
 def cart(request):
     inventory = Inventory.objects.all()
+    pos = Pos.objects.all()
     
     if request.user.is_authenticated:
         staff = request.user
@@ -137,12 +138,14 @@ def cart(request):
     context = {
         'items':items,
         'sale':sale,
+        'pos':pos,
         'inventory':inventory
     }
     return render(request, 'ims/cart.html', context)
 
 def checkout(request):
     inventory = Inventory.objects.all()
+    pos = Pos.objects.all()
     
     if request.user.is_authenticated:
         staff = request.user
@@ -159,11 +162,13 @@ def checkout(request):
     context = {
         'items':items,
         'sale':sale,
-        'inventory':inventory
+        'inventory':inventory,
+        # 'pos':pos
     }
     return render(request, 'ims/checkout.html', context)
 
 def updateCart(request):
+    pos = Pos.objects.all()
     data = json.loads(request.body)
     inventoryId = data['inventoryId']
     action = data['action']
@@ -183,12 +188,14 @@ def updateCart(request):
         saleItem.delete()
 
     context = {
-        'qty': sale.get_cart_items
+        'qty': sale.get_cart_items,
+        # 'pos':pos
     }
 
     return JsonResponse(context, safe=False)
 
 def updateQuantity(request):
+    pos = Pos.objects.all()
     data = json.loads(request.body)
     input_value = int(data['val'])
     inventory_Id = data['invent_id']
@@ -208,12 +215,14 @@ def updateQuantity(request):
     context = {
         'sub_total':saleItem.get_total,
         'final_total':sale.get_cart_total,
-        'total_quantity':sale.get_cart_items
+        'total_quantity':sale.get_cart_items,
+        'pos':pos
     }
 
     return JsonResponse(context, safe=False)
 
 def sale_complete(request):
+    pos = Pos.objects.all()
     transaction_id = datetime.now().timestamp()
     data = json.loads(request.body)
     staff = request.user
@@ -229,6 +238,7 @@ def sale_complete(request):
     sale.save()
     messages.success(request, 'sale completed')
 
+#    need to add shop in other to manage multiple shops and staffs per shop
     return JsonResponse('Payment completed', safe=False)
 
 @login_required
@@ -646,5 +656,58 @@ def createTicket(request):
     
     return render(request, 'ims/create_ticket.html', context)
 
+def posView(request):
+    pos = Pos.objects.all()
+
+    context = {
+        'pos':pos,
+    }
+    return render(request, 'ims/pos.html', context)
+
 def addPos(request):
-    return render(request, 'ims/pos.html')
+    form = PosForm()
+    if request.method == 'POST':
+        form = PosForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Shop created successfully')
+            return redirect('pos')
+
+    context = {
+        'form':form
+    }
+    return render(request, 'ims/addpos.html', context)
+
+def viewPos(request, pk):
+    pos = Pos.objects.get(id = pk)
+    sale = Sale.objects.filter(staff_id = pk)
+
+    context = {
+        'pos':pos,
+        'sale':sale
+    }
+    return render(request, 'ims/viewpos.html', context)
+
+def editPos(request, pk):
+    pos = Pos.objects.get(id = pk)
+    form = EditPosForm(instance=pos)
+    if request.method == 'POST':
+        form = EditPosForm(request.POST, instance=pos)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Successfully Updated')
+            return redirect('pos')
+
+    context = {
+        'form':form,
+        'pos':pos,
+    }
+    return render(request, 'ims/editpos.html', context)
+
+def deletePos(request):
+    if request.method == 'POST':
+        pos = Pos.objects.get(id = request.POST.get('id')) 
+        if pos != None:
+            pos.delete()
+            messages.success(request, "Succesfully deleted")
+            return redirect('pos')

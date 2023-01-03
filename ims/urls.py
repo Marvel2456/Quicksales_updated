@@ -38,7 +38,11 @@ urlpatterns = [
     path('ticket/', views.errorTicket, name='ticket'),
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('tickets/<str:pk>', views.Ticket, name='tickets'),
-    path('pos/', views.addPos, name='pos'),
+    path('pos/', views.posView, name='pos'),
+    path('addpos/', views.addPos, name='addpos'),
+    path('viewpos/<str:pk>/', views.viewPos, name='viewpos'),
+    path('editpos/<str:pk>/', views.editPos, name='editpos'),
     path('reports/', views.report, name='reports'),
     path('<int:year>/<str:month>/', views.eventsManager, name='report'),
+    path('delete_pos/', views.deletePos, name='delete_pos'),
 ]

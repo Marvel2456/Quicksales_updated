@@ -53,6 +53,7 @@ def dashboard(request):
         date_added__day = current_day
     ).all()
     total_sales = sum(today_sales.values_list('final_total_price',flat=True))
+    # make graph for highest paid products per day
     today_profit = Sale.objects.filter(
         date_added__year=current_year,
         date_added__month = current_month,
@@ -85,22 +86,22 @@ def dashboard(request):
 @for_admin
 def report(request):
     now = datetime.now()
-    current_year = now.strftime("%Y")
-    current_month = now.strftime("%m")
-    current_day = now.strftime("%d")
+    start_date_contains = request.GET.get('start_date')
+    end_date_contains = request.GET.get('end_date')
+    sale = Sale.objects.all()
+
+    if start_date_contains != '' and start_date_contains is not None:
+        sale = sale.filter(date_updated__gte=start_date_contains)
+
+    if end_date_contains != '' and end_date_contains is not None:
+        sale = sale.filter(date_updated__lt=end_date_contains)
     
-    monthly_profit = Sale.objects.filter(
-        date_added__year = current_year,
-        date_added__month = current_month
-    )
-    total_profits = sum(monthly_profit.values_list('total_profit', flat=True))
-    yearly_prof = Sale.objects.filter(
-        date_added__year = current_year,
-    )
-    year_prof = sum(yearly_prof.values_list('total_profit', flat=True))
+    
+    total_profits = sum(sale.values_list('total_profit', flat=True))
+    
 
     context = {
-        'year_prof':year_prof,
+        'sale':sale,
         'total_profits':total_profits,
     }
     return render(request, 'ims/reports.html', context)
@@ -145,7 +146,6 @@ def cart(request):
 
 def checkout(request):
     inventory = Inventory.objects.all()
-    pos = Pos.objects.all()
     
     if request.user.is_authenticated:
         staff = request.user
@@ -168,7 +168,6 @@ def checkout(request):
     return render(request, 'ims/checkout.html', context)
 
 def updateCart(request):
-    pos = Pos.objects.all()
     data = json.loads(request.body)
     inventoryId = data['inventoryId']
     action = data['action']
@@ -189,13 +188,11 @@ def updateCart(request):
 
     context = {
         'qty': sale.get_cart_items,
-        # 'pos':pos
     }
 
     return JsonResponse(context, safe=False)
 
 def updateQuantity(request):
-    pos = Pos.objects.all()
     data = json.loads(request.body)
     input_value = int(data['val'])
     inventory_Id = data['invent_id']
@@ -205,8 +202,6 @@ def updateQuantity(request):
     sale, created = Sale.objects.get_or_create(staff=staff, completed=False)
     saleItem, created = SalesItem.objects.get_or_create(sale=sale, inventory=inventory)
     saleItem.quantity = input_value
-    saleItem.get_total = saleItem.total
-    saleItem.get_cost_total = saleItem.cost_total
     saleItem.save()
 
     if saleItem.quantity <= 0:
@@ -216,13 +211,11 @@ def updateQuantity(request):
         'sub_total':saleItem.get_total,
         'final_total':sale.get_cart_total,
         'total_quantity':sale.get_cart_items,
-        'pos':pos
     }
 
     return JsonResponse(context, safe=False)
 
 def sale_complete(request):
-    pos = Pos.objects.all()
     transaction_id = datetime.now().timestamp()
     data = json.loads(request.body)
     staff = request.user
@@ -234,11 +227,13 @@ def sale_complete(request):
 
 
     if total == sale.get_cart_total:
-        sale.completed = True 
+        sale.completed = True
     sale.save()
+
+
     messages.success(request, 'sale completed')
 
-#    need to add shop in other to manage multiple shops and staffs per shop
+#   need to add shop in other to manage multiple shops and staffs per shop
     return JsonResponse('Payment completed', safe=False)
 
 @login_required
@@ -256,7 +251,7 @@ def sales(request):
         sale_page = sale.filter(date_updated__gte=start_date_contains)
 
     if end_date_contains != '' and end_date_contains is not None:
-        sale_page = sale.filter(date_updated__lte=end_date_contains)
+        sale_page = sale.filter(date_updated__lt=end_date_contains)
 
     context = {
         'sale':sale,
